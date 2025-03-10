@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface AirlineService {
 
-    // this is a method for post or create
+
     Airline create(PostAirlineDto postAirlineDto);
 
-    // update
+
     Airline update(PutAirlineDto  putAirlineDto);
 
     List<Airline>  findAll();
