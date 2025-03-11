@@ -37,6 +37,10 @@ public class Ticket {
     @JsonIgnoreProperties({"ticket"})
     private BoardingPass boardingPass;
 
+    public Ticket() {
+
+    }
+
     @PreRemove
     private void preRemove(){
         if(boardingPass != null){
@@ -44,7 +48,7 @@ public class Ticket {
         }
     }
 
-    public Ticket() {}
+    public Ticket(String seatNumber, String aClass, Double price) {}
 
     public Ticket(String seatNumber, String _class, BigDecimal price){
         this.seatNumber = seatNumber;

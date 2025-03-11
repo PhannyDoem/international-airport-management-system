@@ -31,7 +31,7 @@ public class CheckIn {
 
     public CheckIn() {}
 
-    private CheckIn(LocalDateTime checkInTime, Integer deskNumber){
+    public CheckIn(LocalDateTime checkInTime, Integer deskNumber){
         this.checkInTime = checkInTime;
         this.deskNumber = deskNumber;
     }

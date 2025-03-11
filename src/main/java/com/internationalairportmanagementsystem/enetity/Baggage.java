@@ -11,6 +11,7 @@ public class Baggage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "baggage_id")
     private Long baggageId;
+
     @Column(name = "wright")
     private Double weight;
 
@@ -25,7 +26,7 @@ public class Baggage {
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
-    public Baggage() {}
+    public Baggage(Double weight) {}
 
     public Baggage(Flight flight, Passenger passenger) {
         this.flight = flight;

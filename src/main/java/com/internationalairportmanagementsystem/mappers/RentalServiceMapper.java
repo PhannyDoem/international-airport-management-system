@@ -1,0 +1,29 @@
+package com.internationalairportmanagementsystem.mappers;
+
+import com.internationalairportmanagementsystem.dtos.posts.PostRentalService;
+import com.internationalairportmanagementsystem.dtos.puts.PutRentalServiceDto;
+import com.internationalairportmanagementsystem.enetity.RentalService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RentalServiceMapper {
+    public RentalService postToRentalService(PostRentalService  postRentalService) {
+        RentalService rentalService = new RentalService(
+                postRentalService.type(),
+                postRentalService.description(),
+                postRentalService.rate()
+        );
+        rentalService.setRentalServiceId(0L);
+        return rentalService;
+    }
+
+    public RentalService putToRentalService(PutRentalServiceDto putRentalServiceDto) {
+        RentalService rentalService = new RentalService(
+                putRentalServiceDto.type(),
+                putRentalServiceDto.description(),
+                putRentalServiceDto.rate()
+        );
+        rentalService.setRentalServiceId(putRentalServiceDto.rentalId());
+        return rentalService;
+    }
+}

@@ -9,7 +9,7 @@ public class RentalService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rental_id")
-    private Long id;
+    private Long rentalServiceId;
     @Column(name = "type")
     private String type;
     @Column(name = "description")
@@ -33,13 +33,6 @@ public class RentalService {
         this.description = description;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Double getRate() {
         return rate;
@@ -47,6 +40,14 @@ public class RentalService {
 
     public void setRate(Double rate) {
         this.rate = rate;
+    }
+
+    public Long getRentalServiceId() {
+        return rentalServiceId;
+    }
+
+    public void setRentalServiceId(Long rentalServiceId) {
+        this.rentalServiceId = rentalServiceId;
     }
 
     public String getType() {
@@ -61,7 +62,7 @@ public class RentalService {
     public String toString() {
         return "RentalService{" +
                 "description='" + description + '\'' +
-                ", id=" + id +
+                ", rentalServiceId=" + rentalServiceId +
                 ", type='" + type + '\'' +
                 ", rate=" + rate +
                 '}';
