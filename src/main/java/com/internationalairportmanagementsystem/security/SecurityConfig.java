@@ -35,22 +35,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF protection
+                .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint(jwtAuthEntryPoint) // Set custom entry point
+                        exceptionHandling.authenticationEntryPoint(jwtAuthEntryPoint)
                 )
                 .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/api/private/**").access(customAuthorizationManager) // Custom authorization logic
-                                .requestMatchers("/**").permitAll() // Permit all other requests
-                                .anyRequest().permitAll() // Allow any other request
+                                .requestMatchers("/api/private/**").access(customAuthorizationManager)
+                                .requestMatchers("/api/public/**").permitAll()
+                                .requestMatchers("/**").permitAll()
+                                .anyRequest().permitAll()
                 )
-                .httpBasic(httpBasic -> {}); // Enable HTTP Basic authentication
+                .httpBasic(httpBasic -> {});
 
-        // Add custom JWT authentication filter before UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

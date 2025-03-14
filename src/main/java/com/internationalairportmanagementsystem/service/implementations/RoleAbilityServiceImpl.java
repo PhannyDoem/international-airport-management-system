@@ -1,6 +1,6 @@
 package com.internationalairportmanagementsystem.service.implementations;
 
-import com.internationalairportmanagementsystem.dtos.posts.PostRoleDto;
+import com.internationalairportmanagementsystem.dtos.posts.PostRoleAbilityDto;
 import com.internationalairportmanagementsystem.enetity.Ability;
 import com.internationalairportmanagementsystem.enetity.Role;
 import com.internationalairportmanagementsystem.repository.RoleRepository;
@@ -24,8 +24,11 @@ public class RoleAbilityServiceImpl implements RoleAbilityService {
     }
 
     @Override
-    public Role create(PostRoleDto postRoleDto) {
-     return roleService.create(postRoleDto);
+    public Role create(PostRoleAbilityDto postRoleAbilityDto) {
+     Role role = roleService.findById(postRoleAbilityDto.roleId());
+     Ability ability = abilityService.findById(postRoleAbilityDto.abilityId());
+     role.addAbility(ability);
+     return roleRepository.save(role);
     }
 
     @Override

@@ -10,6 +10,7 @@ public interface UserEntityService {
     UserEntity create(PostUserDto postUserDto);
     UserEntity update(PutUserDto putUserDto);
     List<UserEntity> findAll();
+    Boolean existsByUsername(String username);
     UserEntity findByUsername(String username);
     UserEntity findById(Long userId);
     String deleteById(Long userId);

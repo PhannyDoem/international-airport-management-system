@@ -39,6 +39,11 @@ public class UserEntityServiceImpl implements UserEntityService {
     }
 
     @Override
+    public Boolean existsByUsername(String username) {
+        return userEntityRepository.existsByUsername(username);
+    }
+
+    @Override
     public UserEntity findByUsername(String username) {
         return userEntityRepository.findByUsername(username).orElse(null);
     }
