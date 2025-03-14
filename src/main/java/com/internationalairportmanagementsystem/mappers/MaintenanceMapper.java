@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MaintenanceMapper {
-    public Maintenance poetToMaintenance(PostMaintenanceDto  postMaintenanceDto) {
+    public Maintenance postToMaintenance(PostMaintenanceDto  postMaintenanceDto) {
         Maintenance maintenance = new Maintenance(
                 postMaintenanceDto.date(),
                 postMaintenanceDto.type(),

@@ -13,7 +13,7 @@ public interface BaggageService {
 
     List<Baggage>  findAll();
 
-    String  findById(Long baggageId);
+    Baggage  findById(Long baggageId);
 
     String deleteById(Long baggageId);
 

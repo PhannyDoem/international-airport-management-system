@@ -12,7 +12,6 @@ public interface UserEntityService {
     List<UserEntity> findAll();
     UserEntity findByUsername(String username);
     UserEntity findById(Long userId);
-    UserEntity findByEmail(String email);
     String deleteById(Long userId);
     String deleteAll();
 }
