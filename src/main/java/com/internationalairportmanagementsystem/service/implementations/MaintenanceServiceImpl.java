@@ -6,7 +6,6 @@ import com.internationalairportmanagementsystem.enetity.Maintenance;
 import com.internationalairportmanagementsystem.mappers.MaintenanceMapper;
 import com.internationalairportmanagementsystem.repository.MaintenanceRepository;
 import com.internationalairportmanagementsystem.service.interfaces.MaintenanceService;
-import com.sun.tools.javac.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +17,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     private MaintenanceMapper maintenanceMapper;
 
     @Autowired
-    public MaintenanceServiceImpl(MaintenanceRepository maintenanceRepository, MaintenanceMapper maintenanceMapper) {
+    public MaintenanceServiceImpl(MaintenanceRepository maintenanceRepository) {
         this.maintenanceRepository = maintenanceRepository;
-        this.maintenanceMapper = maintenanceMapper;
     }
 
     @Override
