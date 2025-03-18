@@ -1,7 +1,6 @@
 package com.internationalairportmanagementsystem.controller;
 
 import com.internationalairportmanagementsystem.dtos.posts.PostRoleAbilityDto;
-import com.internationalairportmanagementsystem.dtos.posts.PostRoleDto;
 import com.internationalairportmanagementsystem.enetity.Role;
 import com.internationalairportmanagementsystem.service.interfaces.RoleAbilityService;
 import io.swagger.v3.oas.annotations.Operation;
