@@ -1,6 +1,6 @@
 package com.internationalairportmanagementsystem.dtos.posts;
 
-public record PostRentalService(
+public record PostRentalServiceDto(
         String type,
         String description,
         Double rate

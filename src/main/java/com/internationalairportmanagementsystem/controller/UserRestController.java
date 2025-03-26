@@ -23,12 +23,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class UserRestController {
+
     private AuthenticationManager authenticationManager;
+
     private JWTGenerator jwtGenerator;
+
     private UserEntityService userEntityService;
 
     @Autowired
-    public UserRestController(AuthenticationManager authenticationManager, JWTGenerator jwtGenerator, UserEntityService userEntityService) {
+    public UserRestController(AuthenticationManager authenticationManager,
+                              JWTGenerator jwtGenerator,
+                              UserEntityService userEntityService) {
         this.authenticationManager = authenticationManager;
         this.jwtGenerator = jwtGenerator;
         this.userEntityService = userEntityService;
@@ -43,19 +48,17 @@ public class UserRestController {
                             responseCode = "200"
                     ),
                     @ApiResponse(
-                            description = "Invalid credentails",
+                            description = "Invalid credentials",
                             responseCode = "401"
                     )
             }
     )
-
-    @PostMapping("public/auth/user/login")
-    public ResponseEntity<AuthResponseDto> login(@RequestBody PostLongInDto postLongInDto){
+    @PostMapping("/public/auth/users/login")
+    public ResponseEntity<AuthResponseDto> login(@RequestBody PostLongInDto loginDto){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        postLongInDto.username(),
-                        postLongInDto.password()));
-
+                        loginDto.getUsername(),
+                        loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
         return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
@@ -63,10 +66,10 @@ public class UserRestController {
 
     @Operation(
             description = "Register a new user",
-            summary = "Endpoint register new user",
+            summary = "Endpoint to register a new user",
             responses = {
                     @ApiResponse(
-                            description = "Successfully register new user",
+                            description = "Successfully registered a new user",
                             responseCode = "200"
                     ),
                     @ApiResponse(
@@ -79,23 +82,21 @@ public class UserRestController {
                     )
             }
     )
-
-
-    @PostMapping("/public/auth/user/register")
-    public ResponseEntity<String> register(@RequestBody PostUserDto postUserDto){
-        if (userEntityService.existsByUsername(postUserDto.username())){
-            return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
+    @PostMapping("/public/auth/users/register")
+    public ResponseEntity<String> register(@RequestBody PostUserDto postUserDto) {
+        if (userEntityService.existsByUsername(postUserDto.username())) {
+            return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
         userEntityService.create(postUserDto);
-        return new ResponseEntity<>("Successfully created user", HttpStatus.OK);
+        return new ResponseEntity<>("User registered success!", HttpStatus.OK);
     }
 
     @Operation(
-            description = "Get all users private endpoint",
-            summary = "Get all user endpoint",
+            description = "Get all users (private endpoint)",
+            summary = "Get all users endpoint",
             responses = {
                     @ApiResponse(
-                            description = "Successfully retrieved all user",
+                            description = "Successfully retrieved all users",
                             responseCode = "200"
                     ),
                     @ApiResponse(
@@ -105,20 +106,20 @@ public class UserRestController {
             }
     )
     @GetMapping("/private/users")
-    public List<UserEntity> findAllUsers(){
+    public List<UserEntity> findAllUsers() {
         return userEntityService.findAll();
     }
 
     @Operation(
-            description = "Get a user by ID, private endpoint",
-            summary = "Endpoint to get user by ID",
+            description = "Get a user by ID (private endpoint)",
+            summary = "Endpoint to get user by ID ",
             responses = {
                     @ApiResponse(
                             description = "Successfully retrieved the user",
                             responseCode = "200"
                     ),
                     @ApiResponse(
-                            description = "User ID  not found",
+                            description = "User ID not found",
                             responseCode = "404"
                     ),
                     @ApiResponse(
@@ -127,46 +128,21 @@ public class UserRestController {
                     )
             }
     )
-    @GetMapping("/private/user/id/{id}")
-    public UserEntity getUserById(@PathVariable Long id){
-        UserEntity userEntity = userEntityService.findById(id);
-        if (userEntity == null){
-            throw new RuntimeException("User not found");
+    @GetMapping("/private/users/{userId}")
+    public UserEntity getUserById(@PathVariable Long userId) {
+        UserEntity user = userEntityService.findById(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found for id - " + userId);
         }
-        return userEntity;
+        return user;
     }
+
     @Operation(
-            description = "Get user by username",
-            summary = "Endpoint to get user",
+            description = "Update a user (private endpoint)",
+            summary = "Endpoint to update user",
             responses = {
                     @ApiResponse(
-                            description = "Successfully get the user",
-                            responseCode = "200"
-                    ),
-                    @ApiResponse(
-                            description = "Username not found or Username is taken",
-                            responseCode = "404 or 400"
-                    ),
-                    @ApiResponse(
-                            description = "Access unauthorized",
-                            responseCode = "401"
-                    )
-            }
-    )
-    @GetMapping("private/user/username/(username)")
-    public UserEntity getUserByUsername(@RequestParam String username){
-        UserEntity userEntity = userEntityService.findByUsername(username);
-        if (userEntity == null){
-            throw new RuntimeException("User not found");
-        }
-        return userEntity;
-    }
-    @Operation(
-            description = "Update user private endpoint",
-            summary = "Endpoint to update",
-            responses = {
-                    @ApiResponse(
-                            description = "Successfully update the user",
+                            description = "Successfully updated the user",
                             responseCode = "200"
                     ),
                     @ApiResponse(
@@ -180,16 +156,27 @@ public class UserRestController {
             }
     )
 
+    @GetMapping("/private/users/username/{username}")
+    public UserEntity getUserByUsername(@PathVariable String username) {
+        UserEntity user = userEntityService.findByUsername(username);
+        if (user == null) {
+            throw new RuntimeException("User not found for username - " + username);
+        }
+        return user;
+    }
+
     @PutMapping("/private/users")
-    public ResponseEntity<String> updateUser(@RequestBody PutUserDto putUserDto){
-        UserEntity userEntity = userEntityService.findById(putUserDto.userId());
+    public ResponseEntity<String> updateUser(@RequestBody PutUserDto putUserDto) {
+        UserEntity user = userEntityService.findById(putUserDto.userId());
+
         if (userEntityService.existsByUsername(putUserDto.username()) &&
-                !putUserDto.username().equals(userEntity.getUsername())){
-            return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
+                !putUserDto.username().equals(user.getUsername())) {
+            return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
         userEntityService.update(putUserDto);
-        return new ResponseEntity<>("Successfully updated user", HttpStatus.OK);
+        return new ResponseEntity<>("User updated success!", HttpStatus.OK);
     }
+
 
     @Operation(
             description = "Delete a user by ID (private endpoint)",
@@ -209,15 +196,16 @@ public class UserRestController {
                     )
             }
     )
-    @DeleteMapping("/private/users/{id}")
-    public String deleteUserById(@PathVariable Long id){
-        UserEntity userEntity = userEntityService.findById(id);
-        if (userEntity == null){
-            throw new RuntimeException("User not found");
+    @DeleteMapping("/private/users/{userId}")
+    public String deleteUserById(@PathVariable Long userId) {
+        UserEntity user = userEntityService.findById(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found for id - " + userId);
         }
-        userEntityService.deleteById(id);
-        return "Successfully deleted user";
+        userEntityService.deleteById(userId);
+        return "Deleted user with id - " + userId;
     }
+
     @Operation(
             description = "Delete all users (private endpoint)",
             summary = "Endpoint to delete all users",
@@ -232,10 +220,8 @@ public class UserRestController {
                     )
             }
     )
-
     @DeleteMapping("/private/users")
-    public String deleteAllUsers(){
+    public String deleteAllUsers() {
         return userEntityService.deleteAll();
     }
-
 }

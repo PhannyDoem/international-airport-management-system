@@ -1,6 +1,6 @@
 package com.internationalairportmanagementsystem.service.implementations;
 
-import com.internationalairportmanagementsystem.dtos.posts.PostRentalService;
+import com.internationalairportmanagementsystem.dtos.posts.PostRentalServiceDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutRentalServiceDto;
 import com.internationalairportmanagementsystem.enetity.RentalService;
 import com.internationalairportmanagementsystem.mappers.RentalServiceMapper;
@@ -23,7 +23,7 @@ public class RentalServiceServiceImpl implements RentalServiceService {
     }
 
     @Override
-    public RentalService create(PostRentalService postRentalService) {
+    public RentalService create(PostRentalServiceDto postRentalService) {
         RentalService rentalService = rentalServiceMapper.postToRentalService(postRentalService);
         return rentalServiceRepository.save(rentalService);
     }

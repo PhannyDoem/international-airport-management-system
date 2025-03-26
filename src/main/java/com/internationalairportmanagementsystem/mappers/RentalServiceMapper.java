@@ -1,13 +1,13 @@
 package com.internationalairportmanagementsystem.mappers;
 
-import com.internationalairportmanagementsystem.dtos.posts.PostRentalService;
+import com.internationalairportmanagementsystem.dtos.posts.PostRentalServiceDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutRentalServiceDto;
 import com.internationalairportmanagementsystem.enetity.RentalService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RentalServiceMapper {
-    public RentalService postToRentalService(PostRentalService  postRentalService) {
+    public RentalService postToRentalService(PostRentalServiceDto postRentalService) {
         RentalService rentalService = new RentalService(
                 postRentalService.type(),
                 postRentalService.description(),

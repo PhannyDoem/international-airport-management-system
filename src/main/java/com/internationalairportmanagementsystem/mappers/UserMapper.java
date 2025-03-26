@@ -15,6 +15,7 @@ public class UserMapper {
 
     @Autowired
     public UserMapper(PassengerMapper passengerMapper) {
+
         this.passwordEncoder = passwordEncoder;
     }
 

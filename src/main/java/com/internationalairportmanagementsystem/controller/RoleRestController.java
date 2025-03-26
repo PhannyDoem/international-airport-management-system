@@ -23,26 +23,7 @@ public class RoleRestController {
     public RoleRestController(RoleService roleService) {
         this.roleService = roleService;
     }
-    @Operation(
-            description = "Endpoint to add a new role",
-            summary = "Add a new role",
-            responses = {
-                    @ApiResponse(
-                            description = "Successfully added the role",
-                            responseCode = "200"
-                    ),@ApiResponse(
-                    description = "Access unauthorized",
-                    responseCode = "401"
-            )
-            }
-    )
-    @PostMapping("/roles")
-    public Role addRole(@RequestBody PostRoleDto postRoleDto) {
-        if (roleService.existsByRoleName(postRoleDto.roleName())){
-            throw new RoleAlreadyExistsException("Role Already Exists");
-        }
-        return roleService.create(postRoleDto);
-    }
+
     @Operation(
             description = "Endpoint to retrieve all roles",
             summary = "Get all roles",
@@ -79,13 +60,35 @@ public class RoleRestController {
             )
             }
     )
-    @GetMapping("/roles/{roleId}")
-    public Role getRoleById(@PathVariable Long roleId) {
-        Role role = roleService.findById(roleId);
+    @GetMapping("/roles/{RoleId}")
+    public Role getRoleById(@PathVariable Long RoleId) {
+        Role role = roleService.findById(RoleId);
         if (role == null) {
-            throw new RuntimeException("Role Not Found");
+            throw new RuntimeException("Role not found for id - " + RoleId);
         }
         return role;
+    }
+
+    @Operation(
+            description = "Endpoint to add a new role",
+            summary = "Add a new role",
+            responses = {
+                    @ApiResponse(
+                            description = "Successfully added the role",
+                            responseCode = "200"
+                    ),@ApiResponse(
+                    description = "Access unauthorized",
+                    responseCode = "401"
+            )
+            }
+    )
+    @PostMapping("/roles")
+    public Role addRole(@RequestBody PostRoleDto postRoleDto) {
+        if (roleService.existsByRoleName(postRoleDto.roleName())) {
+            throw new RoleAlreadyExistsException("A role with that name already exists!");
+        }
+
+        return roleService.create(postRoleDto);
     }
 
     @Operation(
@@ -104,12 +107,14 @@ public class RoleRestController {
     @PutMapping("/roles")
     public Role updateRole(@RequestBody PutRoleDto putRoleDto) {
         Role role = roleService.findById(putRoleDto.roleId());
+
         if (roleService.existsByRoleName(putRoleDto.roleName()) &&
-        !putRoleDto.roleName().equals(role.getRoleName())) {
-            throw new RuntimeException("Role Name Already Exists");
+                !putRoleDto.roleName().equals(role.getRoleName())) {
+            throw new RoleAlreadyExistsException("A role with that name already exists!");
         }
         return roleService.update(putRoleDto);
     }
+
     @Operation(
             description = "Endpoint to delete a role by ID",
             summary = "Delete a role by ID",
@@ -127,15 +132,16 @@ public class RoleRestController {
                     )
             }
     )
-    @DeleteMapping("/roles/{roleId}")
-    public ResponseEntity<String> deleteRoleById(@PathVariable Long roleId) {
-        Role role = roleService.findById(roleId);
+    @DeleteMapping("/roles/{RoleId}")
+    public ResponseEntity<String> deleteRoleById(@PathVariable Long RoleId) {
+        Role role = roleService.findById(RoleId);
         if (role == null) {
-            throw new RuntimeException("Role Not Found");
+            throw new RuntimeException("Role not found for id - " + RoleId);
         }
-        roleService.deleteById(roleId);
-        return new  ResponseEntity<>("Role Deleted Successfully", HttpStatus.OK);
+        roleService.deleteById(RoleId);
+        return new ResponseEntity<>("Role by Id - " + RoleId + " deleted!", HttpStatus.OK);
     }
+
 
     @Operation(
             description = "Endpoint to delete all roles",
@@ -152,6 +158,6 @@ public class RoleRestController {
     )
     @DeleteMapping("/roles")
     public String deleteAllRoles() {
-       return roleService.deleteAll();
+        return roleService.deleteAll();
     }
 }

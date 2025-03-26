@@ -7,6 +7,7 @@ import com.internationalairportmanagementsystem.mappers.UserMapper;
 import com.internationalairportmanagementsystem.repository.UserEntityRepository;
 import com.internationalairportmanagementsystem.service.interfaces.UserEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +15,13 @@ import java.util.List;
 @Service
 public class UserEntityServiceImpl implements UserEntityService {
     private UserEntityRepository userEntityRepository;
+    private PasswordEncoder passwordEncoder;
     private UserMapper userMapper;
     @Autowired
-    public UserEntityServiceImpl(UserEntityRepository userEntityRepository, UserMapper userMapper) {
+    public UserEntityServiceImpl(UserEntityRepository userEntityRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userEntityRepository = userEntityRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override

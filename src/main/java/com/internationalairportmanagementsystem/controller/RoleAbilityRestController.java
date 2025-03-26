@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/private")
 public class RoleAbilityRestController {
+
     private RoleAbilityService roleAbilityService;
+
     @Autowired
     public RoleAbilityRestController(RoleAbilityService roleAbilityService) {
         this.roleAbilityService = roleAbilityService;
     }
+
 
     @Operation(
             description = "Endpoint to add a new role ability",
@@ -55,8 +58,8 @@ public class RoleAbilityRestController {
             }
     )
     @DeleteMapping("/role_abilities/{roleId}/{abilityId}")
-    public String deleteByRoleIdAndAbilityId(@PathVariable Long roleId,@PathVariable Long abilityId) {
+    public String deleteRoleAbilityById(@PathVariable Long roleId, @PathVariable Long abilityId) {
         roleAbilityService.deleteByRoleIdAndAbilityId(roleId,abilityId);
-        return "success";
+        return "Deleted role ability with id - " +  roleId + "-" + abilityId;
     }
 }
