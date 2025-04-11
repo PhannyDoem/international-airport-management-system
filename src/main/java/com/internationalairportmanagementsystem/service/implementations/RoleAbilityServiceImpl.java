@@ -27,7 +27,6 @@ public class RoleAbilityServiceImpl implements RoleAbilityService {
     public Role create(PostRoleAbilityDto postRoleAbilityDto) {
      Role role = roleService.findById(postRoleAbilityDto.roleId());
      Ability ability = abilityService.findById(postRoleAbilityDto.abilityId());
-     role.addAbility(ability);
      return roleRepository.save(role);
     }
 

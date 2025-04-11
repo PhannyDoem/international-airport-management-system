@@ -81,27 +81,7 @@ public class Flight {
     @JsonIgnoreProperties({"flight", "userEntity"})
     private List<Employee> employees;
 
-    @PreRemove
-    public void preRemove() {
-        for(CheckIn checkIn : checkIns) {
-            checkIn.setFlight(null);
-        }
-        for(Baggage baggage : baggages) {
-            baggage.setFlight(null);
-        }
-        for(Feedback feedback : feedbacks) {
-            feedback.setFlight(null);
-        }
-        for(Ticket ticket : tickets) {
-            ticket.setFlight(null);
-        }
-        for(FlightSchedule flightSchedule : flightSchedules) {
-            flightSchedule.setFlight(null);
-        }
-        for(Cargo cargo : cargos) {
-            cargo.setFlight(null);
-        }
-    }
+
    public Flight(){}
 
     public Flight(String flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime){
@@ -232,73 +212,4 @@ public class Flight {
                 ", arrivalTime=" + arrivalTime +
                 '}';
     }
-
-    public void addEmployee(Employee tempEmployee) {
-        if (employees == null){
-            employees = new ArrayList<>();
-        }
-
-        employees.add(tempEmployee);
-    }
-
-    public void addCheckIn(CheckIn tempCheckIn) {
-        if (checkIns == null){
-            checkIns = new ArrayList<>();
-        }
-
-        checkIns.add(tempCheckIn);
-
-        tempCheckIn.setFlight(this);
-    }
-
-    public void addBaggage(Baggage tempBaggage) {
-        if (baggages == null){
-            baggages = new ArrayList<>();
-        }
-
-        baggages.add(tempBaggage);
-
-        tempBaggage.setFlight(this);
-    }
-
-    public void addFeedback(Feedback tempFeedback) {
-        if (feedbacks == null){
-            feedbacks = new ArrayList<>();
-        }
-
-        feedbacks.add(tempFeedback);
-
-        tempFeedback.setFlight(this);
-    }
-
-    public void addTicket(Ticket tempTicket) {
-        if (tickets == null){
-            tickets = new ArrayList<>();
-        }
-
-        tickets.add(tempTicket);
-
-        tempTicket.setFlight(this);
-    }
-
-    public void addFlightSchedule(FlightSchedule tempFlightSchedule) {
-        if (flightSchedules == null){
-            flightSchedules = new ArrayList<>();
-        }
-
-        flightSchedules.add(tempFlightSchedule);
-
-        tempFlightSchedule.setFlight(this);
-    }
-
-    public void addCargo(Cargo tempCargo) {
-        if (cargos == null){
-            cargos = new ArrayList<>();
-        }
-
-        cargos.add(tempCargo);
-
-        tempCargo.setFlight(this);
-    }
-
 }

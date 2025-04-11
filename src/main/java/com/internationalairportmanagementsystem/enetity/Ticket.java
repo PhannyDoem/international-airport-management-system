@@ -41,12 +41,6 @@ public class Ticket {
 
     }
 
-    @PreRemove
-    private void preRemove(){
-        if(boardingPass != null){
-            boardingPass.setTicket(null);
-        }
-    }
 
     public Ticket(String seatNumber, String aClass, Double price) {}
 

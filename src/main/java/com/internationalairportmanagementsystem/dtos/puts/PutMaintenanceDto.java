@@ -1,12 +1,13 @@
 package com.internationalairportmanagementsystem.dtos.puts;
 
+import com.internationalairportmanagementsystem.enetity.Aircraft;
+
 import java.time.LocalDateTime;
 
 public record PutMaintenanceDto(
-        Long maintenanceId,
+        String description,
         LocalDateTime date,
         String type,
-        String description,
-        Long aircraftId
+        Aircraft aircraft
 ) {
 }

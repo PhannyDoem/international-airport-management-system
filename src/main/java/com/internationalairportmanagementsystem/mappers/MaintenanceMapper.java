@@ -5,34 +5,28 @@ import com.internationalairportmanagementsystem.dtos.puts.PutMaintenanceDto;
 import com.internationalairportmanagementsystem.enetity.Aircraft;
 import com.internationalairportmanagementsystem.enetity.Maintenance;
 
+import java.time.LocalDateTime;
+
 public class MaintenanceMapper {
     public Maintenance postToMaintenance(PostMaintenanceDto postMaintenanceDto) {
         Maintenance maintenance = new Maintenance(
+                postMaintenanceDto.description(),
                 postMaintenanceDto.date(),
                 postMaintenanceDto.type(),
-                postMaintenanceDto.description()
+                postMaintenanceDto.aircraft()
         );
         maintenance.setMaintenanceId(0L);
-        if (postMaintenanceDto.aircraftId() != null) {
-            Aircraft aircraft = new Aircraft();
-            aircraft.setAircraftId(postMaintenanceDto.aircraftId());
-            maintenance.setAircraft(aircraft);
-        }
         return maintenance;
     }
 
     public Maintenance putToMaintenance(PutMaintenanceDto putMaintenanceDto) {
         Maintenance maintenance = new Maintenance(
+                putMaintenanceDto.description(),
                 putMaintenanceDto.date(),
                 putMaintenanceDto.type(),
-                putMaintenanceDto.description()
+                putMaintenanceDto.aircraft()
         );
-        maintenance.setMaintenanceId(putMaintenanceDto.maintenanceId());
-        if (putMaintenanceDto.aircraftId() != null) {
-            Aircraft aircraft = new Aircraft();
-            aircraft.setAircraftId(putMaintenanceDto.aircraftId());
-            maintenance.setAircraft(aircraft);
-        }
+        maintenance.setMaintenanceId(0L);
         return maintenance;
     }
 }

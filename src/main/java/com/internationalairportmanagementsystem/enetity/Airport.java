@@ -33,15 +33,6 @@ public class Airport {
             "gateAssignments", "tickets", "flightSchedules", "cargo", "empoyees"})
     private List<Flight> arrivals;
 
-    @PreRemove
-    public void preRemove(){
-        for(Flight departure : departures) {
-            departure.setDepartureAirport(null);
-        }
-        for(Flight arrival : arrivals) {
-            arrival.setArrivalAirport(null);
-        }
-    }
 
     public Airport() {}
 
@@ -119,23 +110,4 @@ public class Airport {
                 '}';
     }
 
-    public void addDeparture(Flight tempDeparture) {
-        if (departures == null){
-            departures = new ArrayList<>();
-        }
-
-        departures.add(tempDeparture);
-
-        tempDeparture.setDepartureAirport(this);
-    }
-
-    public void addArrival(Flight tempArrival) {
-        if (departures == null){
-            departures = new ArrayList<>();
-        }
-
-        departures.add(tempArrival);
-
-        tempArrival.setArrivalAirport(this);
-    }
 }

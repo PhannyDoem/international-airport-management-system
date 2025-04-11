@@ -30,7 +30,7 @@ public class BaggageServiceImpl implements BaggageService {
     }
 
     @Override
-    public Baggage update(PutBaggageDto putBaggageDto) {
+    public Baggage update(Long baggageId, PutBaggageDto putBaggageDto) {
         Baggage baggage =  baggageMapper.putToBaggage(putBaggageDto);
         return baggageRepository.save(baggage);
     }

@@ -14,8 +14,8 @@ import java.util.Optional;
 
 @Service
 public class AircraftServiceImpl implements AircraftService {
-    private AircraftRepository aircraftRepository;
-    private AircraftMapper  aircraftMapper;
+    private final AircraftRepository  aircraftRepository;
+    private final AircraftMapper  aircraftMapper;
 
     @Autowired
     public AircraftServiceImpl(AircraftRepository aircraftRepository, AircraftMapper aircraftMapper) {

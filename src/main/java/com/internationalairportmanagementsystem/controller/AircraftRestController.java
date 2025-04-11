@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/private")
 public class AircraftRestController {
-    private AircraftService aircraftService;
+    private final AircraftService aircraftService;
 
     @Autowired
     public AircraftRestController(AircraftService aircraftService) {
