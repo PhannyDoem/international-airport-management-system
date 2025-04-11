@@ -9,7 +9,7 @@ import java.util.List;
 public interface BaggageService {
     Baggage create(PostBaggageDto  postBaggageDto);
 
-    Baggage update(PutBaggageDto putBaggageDto);
+    Baggage update(Long baggageId,PutBaggageDto putBaggageDto);
 
     List<Baggage>  findAll();
 

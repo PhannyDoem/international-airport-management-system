@@ -26,9 +26,10 @@ public class Baggage {
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
-    public Baggage(Double weight) {}
+    public Baggage() {}
 
-    public Baggage(Flight flight, Passenger passenger) {
+    public Baggage(Double weight, Flight flight, Passenger passenger) {
+        this.weight = weight;
         this.flight = flight;
         this.passenger = passenger;
     }

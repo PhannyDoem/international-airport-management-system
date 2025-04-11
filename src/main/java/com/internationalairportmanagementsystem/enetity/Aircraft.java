@@ -121,25 +121,4 @@ public class Aircraft {
                 ", capacity=" + capacity +
                 '}';
     }
-
-    public void addFlight(Flight tempFlight) {
-        if (flights == null){
-            flights = new ArrayList<>();
-        }
-
-        flights.add(tempFlight);
-
-        tempFlight.setAircraft(this);
-    }
-
-    public void addMaintenance(Maintenance tempMaintenance) {
-        if (maintenances == null){
-            maintenances = new ArrayList<>();
-        }
-
-        maintenances.add(tempMaintenance);
-
-        tempMaintenance.setAircraft(this);
-    }
-
 }

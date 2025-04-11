@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class BoardingPass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "boarding_padd_id")
+    @Column(name = "boarding_pass_id")
     private Long boardingPassId;
     @Column(name = "gate")
     private String gate;

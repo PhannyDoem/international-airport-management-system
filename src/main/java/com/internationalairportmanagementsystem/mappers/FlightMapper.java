@@ -36,7 +36,6 @@ public class FlightMapper {
             for (Long employeeId : postFlightDto.employeeIds()) {
                 Employee employee = new Employee();
                 employee.setEmployeeId(employeeId);
-                flight.addEmployee(employee);
             }
         }
         return flight;
@@ -68,7 +67,6 @@ public class FlightMapper {
             for (Integer employeeId : putFlightDto.employeeIds()){
                 Employee employee = new Employee();
                 employee.setEmployeeId(Long.valueOf(employeeId));
-                flight.addEmployee(employee);
             }
         }
         return flight;

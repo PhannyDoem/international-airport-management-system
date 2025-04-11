@@ -1,8 +1,11 @@
 package com.internationalairportmanagementsystem.dtos.posts;
 
+import com.internationalairportmanagementsystem.enetity.Flight;
+import com.internationalairportmanagementsystem.enetity.Passenger;
+
 public record PostBaggageDto(
-        Long passengerId,
-        Long flightId,
-        Double weight
+        Double weight,
+        Flight flight,
+        Passenger passenger
 ) {
 }

@@ -11,31 +11,21 @@ import org.springframework.stereotype.Service;
 public class BaggageMapper {
     public Baggage postToBaggage(PostBaggageDto postBaggageDto) {
         Baggage baggage = new Baggage(
-                postBaggageDto.weight()
+                postBaggageDto.weight(),
+                postBaggageDto.flight(),
+                postBaggageDto.passenger()
         );
         baggage.setBaggageId(0L);
-        Passenger passenger = new Passenger();
-        passenger.setPassengerId(postBaggageDto.passengerId());
-        Flight flight = new Flight();
-        flight.setFlightId(postBaggageDto.flightId());
-
-        baggage.setPassenger(passenger);
-        baggage.setFlight(flight);
         return baggage;
     }
 
     public  Baggage putToBaggage(PutBaggageDto putBaggageDto) {
         Baggage baggage = new Baggage(
-                putBaggageDto.weight()
+                putBaggageDto.weight(),
+                putBaggageDto.flight(),
+                putBaggageDto.passenger()
         );
-        baggage.setBaggageId(putBaggageDto.baggageId());
-        Passenger passenger = new Passenger();
-        passenger.setPassengerId(putBaggageDto.passengerId());
-        Flight flight = new Flight();
-        flight.setFlightId(putBaggageDto.flightId());
-
-        baggage.setPassenger(passenger);
-        baggage.setFlight(flight);
+        baggage.setBaggageId(0L);
         return baggage;
     }
 }

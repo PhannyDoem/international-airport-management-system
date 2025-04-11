@@ -31,7 +31,6 @@ public class FlightCrewServiceImpl implements FlightCrewService {
     public Flight create(PostFlightCrewDto postFlightCrewDto) {
         Flight flight = flightService.findById(postFlightCrewDto.flightId());
         Employee employee = employeeService.findById(postFlightCrewDto.employeeId());
-        flight.addEmployee(employee);
         return flightRepository.save(flight);
     }
 

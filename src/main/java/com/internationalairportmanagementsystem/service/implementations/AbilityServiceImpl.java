@@ -14,8 +14,8 @@ import java.util.Optional;
 
 @Service
 public class AbilityServiceImpl implements AbilityService {
-    private AbilityRepository abilityRepository;
-    private AbilityMapper abilityMapper;
+    private final AbilityRepository abilityRepository;
+    private final AbilityMapper abilityMapper;
     @Autowired
     public AbilityServiceImpl(AbilityRepository abilityRepository, AbilityMapper abilityMapper) {
         this.abilityRepository = abilityRepository;

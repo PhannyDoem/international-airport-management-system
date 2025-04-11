@@ -47,18 +47,6 @@ public class Passenger {
     @JsonIgnoreProperties({"role", "passenger", "employee"})
     private UserEntity userEntity;
 
-    @PreRemove
-    public void preRemove(){
-        for(Feedback feedback:feedbacks){
-            feedback.setPassenger(null);
-        }
-        for(CheckIn checkIn:checkIns){
-            checkIn.setPassenger(null);
-        }
-        for(Ticket ticket:tickets){
-            ticket.setPassenger(null);
-        }
-    }
 
     public Passenger() {}
 
@@ -163,36 +151,6 @@ public class Passenger {
                 ", tickets=" + tickets +
                 ", userEntity=" + userEntity +
                 '}';
-    }
-
-    public void addFeedback(Feedback tempFeedback){
-        if (feedbacks == null){
-            feedbacks = new ArrayList<>();
-        }
-    }
-
-    public void addTicket(Ticket tempTicket){
-        if (tickets == null){
-            tickets = new ArrayList<>();
-        }
-        tickets.add(tempTicket);
-        tempTicket.setPassenger(this);
-    }
-
-    public void addBaggage(Baggage tempBaggage){
-        if (baggages == null){
-            baggages = new ArrayList<>();
-        }
-        baggages.add(tempBaggage);
-        tempBaggage.setPassenger(this);
-    }
-
-    public void addCheckIn(CheckIn tempCheckIn){
-        if (checkIns == null){
-            checkIns = new ArrayList<>();
-        }
-        checkIns.add(tempCheckIn);
-        tempCheckIn.setPassenger(this);
     }
 
 }

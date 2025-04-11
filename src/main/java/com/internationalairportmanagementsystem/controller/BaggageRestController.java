@@ -12,7 +12,6 @@ import com.internationalairportmanagementsystem.service.interfaces.UserEntitySer
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -131,15 +130,15 @@ public class BaggageRestController {
                     )
             }
     )
-    @PutMapping("/baggage")
-    public Baggage updateBaggage(@RequestBody PutBaggageDto putBaggageDto) {
-        Baggage theBaggage = baggageService.findById(putBaggageDto.baggageId());
+    @PutMapping("/baggage{baggageId}")
+    public Baggage updateBaggage(@PathVariable Long baggageId, @RequestBody PutBaggageDto putBaggageDto) {
+        Baggage theBaggage = baggageService.findById(baggageId);
         if (theBaggage == null) {
-            throw new RuntimeException("Baggage id not found - " + putBaggageDto.baggageId() );
+            throw new RuntimeException("Baggage id not found - " +baggageId );
         }
         UserEntity user = getAuthenticatedUser();
         authorizeAccess(user, theBaggage);
-        Baggage dbBaggage = baggageService.update(putBaggageDto);
+        Baggage dbBaggage = baggageService.update(baggageId, putBaggageDto);
         return dbBaggage;
     }
 

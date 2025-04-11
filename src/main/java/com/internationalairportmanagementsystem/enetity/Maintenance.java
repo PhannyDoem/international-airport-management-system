@@ -26,12 +26,13 @@ public class Maintenance {
     @JsonIgnoreProperties({"airline", "flights", "maintenances"})
     private Aircraft aircraft;
 
-    public Maintenance(LocalDateTime date, String type, String description) {}
+    public Maintenance() {}
 
-    public Maintenance(String description, LocalDateTime date, String type) {
+    public Maintenance(String description, LocalDateTime date, String type, Aircraft aircraft) {
         this.description = description;
         this.date = date;
         this.type = type;
+        this.aircraft = aircraft;
     }
 
     public Aircraft getAircraft() {

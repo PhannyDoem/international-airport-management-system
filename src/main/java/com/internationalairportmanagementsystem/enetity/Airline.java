@@ -79,13 +79,4 @@ public class Airline {
                 '}';
     }
 
-    public void addAircraft(Aircraft tempAircraft) {
-        if (aircrafts == null){
-            aircrafts = new ArrayList<>();
-        }
-
-        aircrafts.add(tempAircraft);
-
-        tempAircraft.setAirline(this);
-    }
 }

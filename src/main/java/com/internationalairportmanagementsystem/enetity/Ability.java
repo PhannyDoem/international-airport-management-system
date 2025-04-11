@@ -15,7 +15,7 @@ public class Ability {
     @Column(name = "abilities_id")
     private Long abilityId;
 
-    @Column(name = "entiy")
+    @Column(name = "entity")
     private String entity;
 
     @Column(name = "verb")
@@ -92,13 +92,5 @@ public class Ability {
                 ", field='" + field + '\'' +
                 ", roles=" + roles +
                 '}';
-    }
-
-    public void addRole(Role role){
-        if(roles!=null){
-            this.roles = new ArrayList<>();
-        }
-        assert this.roles != null;
-        this.roles.add(role);
     }
 }

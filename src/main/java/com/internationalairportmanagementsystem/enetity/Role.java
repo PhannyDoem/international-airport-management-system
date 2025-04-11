@@ -28,12 +28,6 @@ public class Role {
     )
     private List<Ability> abilities;
 
-    @PreRemove
-    public void preRemove(){
-        for(UserEntity userEntity : users){
-            userEntity.setRole(null);
-        }
-    }
 
     public Role(){}
 
@@ -83,10 +77,5 @@ public class Role {
                 '}';
     }
 
-    public void addAbility(Ability ability){
-        if(this.abilities == null){
-            this.abilities = new ArrayList<>();
-        }
-    }
 
 }

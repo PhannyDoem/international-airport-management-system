@@ -1,9 +1,11 @@
 package com.internationalairportmanagementsystem.dtos.puts;
 
+import com.internationalairportmanagementsystem.enetity.Flight;
+import com.internationalairportmanagementsystem.enetity.Passenger;
+
 public record PutBaggageDto(
-        Long baggageId,
-        Long passengerId,
-        Long flightId,
-        Double weight
+        Double weight,
+        Flight flight,
+        Passenger passenger
 ) {
 }
