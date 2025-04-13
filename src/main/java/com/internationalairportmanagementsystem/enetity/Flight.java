@@ -84,10 +84,12 @@ public class Flight {
 
    public Flight(){}
 
-    public Flight(String flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime){
+    public Flight(String flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,Airport arrivalAirport, GateAssignment gateAssignment){
         this.flightNumber = flightNumber;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
+        this.arrivalAirport = arrivalAirport;
+        this.gateAssignment = gateAssignment;
     }
 
     public Aircraft getAircraft() {

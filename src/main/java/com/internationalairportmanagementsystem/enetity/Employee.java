@@ -32,10 +32,11 @@ public class Employee {
     public Employee() {}
 
 
-    public Employee(String name, String role, String contactInfo) {
+    public Employee(String name, String role, String contactInfo, UserEntity userEntity) {
         this.name = name;
         this.role = role;
         this.contactInfo = contactInfo;
+        this.userEntity = userEntity;
     }
 
     public String getContactInfo() {

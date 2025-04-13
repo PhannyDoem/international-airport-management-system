@@ -1,11 +1,12 @@
 package com.internationalairportmanagementsystem.dtos.puts;
 
+import com.internationalairportmanagementsystem.enetity.Ticket;
+
 import java.time.LocalDateTime;
 
 public record PutBoardingPassDto(
-        Long boardingPassId,
         String gate,
         LocalDateTime boardingTime,
-        Long ticketId
+        Ticket ticket
 ) {
 }

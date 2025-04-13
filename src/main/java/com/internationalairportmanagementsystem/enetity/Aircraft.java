@@ -41,19 +41,11 @@ public class Aircraft {
 
     public  Aircraft() {}
 
-    public Aircraft(String tailNumber, String model, Integer capacity) {
+    public Aircraft(String tailNumber, String model, Integer capacity, Airline airline) {
         this.tailNumber = tailNumber;
         this.model = model;
         this.capacity = capacity;
-    }
-    @PreRemove
-    public void preRemove(){
-        for(Flight flight : flights) {
-            flight.setAircraft(null);
-        }
-        for(Maintenance maintenance : maintenances) {
-            maintenance.setAircraft(null);
-        }
+        this.airline = airline;
     }
 
     public Long getAircraftId() {

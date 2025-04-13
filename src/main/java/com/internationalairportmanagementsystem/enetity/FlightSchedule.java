@@ -31,10 +31,11 @@ public class FlightSchedule {
 
     public FlightSchedule() {}
 
-    public FlightSchedule(LocalDateTime scheduledDepartureTime, LocalDateTime scheduledArrivalTime, String status) {
+    public FlightSchedule(LocalDateTime scheduledDepartureTime, LocalDateTime scheduledArrivalTime, String status, Flight flight) {
         this.scheduledDepartureTime = scheduledDepartureTime;
         this.scheduledArrivalTime = scheduledArrivalTime;
         this.status = status;
+        this.flight = flight;
 
     }
 

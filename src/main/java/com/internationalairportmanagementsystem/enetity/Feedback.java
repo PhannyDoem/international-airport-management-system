@@ -32,9 +32,11 @@ public class Feedback {
 
     public Feedback() {}
 
-    public Feedback(String content, String status){
+    public Feedback(String content, String status, Passenger passenger, Flight flight) {
         this.content = content;
         this.status = status;
+        this.passenger = passenger;
+        this.flight = flight;
     }
 
     public String getContent() {

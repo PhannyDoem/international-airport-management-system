@@ -24,9 +24,10 @@ public class Cargo {
 
     public Cargo(){}
 
-    public Cargo( Double weight, String dimension) {
+    public Cargo( Double weight, String dimension, Flight flight) {
         this.weight = weight;
         this.dimension = dimension;
+        this.flight = flight;
     }
 
     public Long getCargoId() {

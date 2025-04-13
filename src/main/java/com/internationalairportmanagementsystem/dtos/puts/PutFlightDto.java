@@ -1,16 +1,16 @@
 package com.internationalairportmanagementsystem.dtos.puts;
 
+import com.internationalairportmanagementsystem.enetity.Airport;
+import com.internationalairportmanagementsystem.enetity.GateAssignment;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record PutFlightDto(
-        Long flightId,
         String flightNumber,
-        Long departureAirportId,
-        Long arrivalAirportId,
         LocalDateTime departureTime,
         LocalDateTime arrivalTime,
-        Long aircraftId,
-        List<Integer> employeeIds
+        Airport arrivalAirport,
+        GateAssignment gateAssignment
 ) {
 }

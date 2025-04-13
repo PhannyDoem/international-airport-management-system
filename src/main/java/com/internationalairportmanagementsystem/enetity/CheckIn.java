@@ -31,9 +31,11 @@ public class CheckIn {
 
     public CheckIn() {}
 
-    public CheckIn(LocalDateTime checkInTime, Integer deskNumber){
+    public CheckIn(LocalDateTime checkInTime, Integer deskNumber, Passenger passenger, Flight flight) {
         this.checkInTime = checkInTime;
         this.deskNumber = deskNumber;
+        this.passenger = passenger;
+        this.flight = flight;
     }
 
     public Long getCheckInId() {

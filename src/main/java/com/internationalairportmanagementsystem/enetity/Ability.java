@@ -25,13 +25,6 @@ public class Ability {
     @JsonIncludeProperties({"abilities", "users"})
      private List<Role> roles;
 
-    @PreRemove
-   public void preRemove(){
-       for(Role role : roles){
-           role.getAbilities().remove(this);
-       }
-   }
-
    public Ability(){}
 
     public Ability(String entity, String verb, String field) {

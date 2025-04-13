@@ -1,12 +1,12 @@
 package com.internationalairportmanagementsystem.dtos.puts;
 
+import com.internationalairportmanagementsystem.enetity.UserEntity;
+
 public record PutPassengerDto(
-        Long passengerId,
         String name,
         String passportNumber,
         String nationality,
         String contactDetails,
-        String username,
-        String password
+        UserEntity userEntity
 ) {
 }

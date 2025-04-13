@@ -29,9 +29,10 @@ public class GateAssignment {
 
     public GateAssignment() {}
 
-    public GateAssignment(String gate, LocalDateTime assignedTime) {
+    public GateAssignment(String gate, LocalDateTime assignedTime, Flight flight) {
         this.gate = gate;
         this.assignedTime = assignedTime;
+        this.flight = flight;
     }
 
     public LocalDateTime getAssignedTime() {

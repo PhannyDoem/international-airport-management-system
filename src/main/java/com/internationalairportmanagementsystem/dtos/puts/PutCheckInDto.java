@@ -1,12 +1,14 @@
 package com.internationalairportmanagementsystem.dtos.puts;
 
+import com.internationalairportmanagementsystem.enetity.Flight;
+import com.internationalairportmanagementsystem.enetity.Passenger;
+
 import java.time.LocalDateTime;
 
 public record PutCheckInDto(
-        Long checkInId,
-        Long passengerId,
-        Long flightId,
         LocalDateTime checkInTime,
-        Integer deskNumber
+        Integer deskNumber,
+        Passenger passenger,
+        Flight flight
 ) {
 }

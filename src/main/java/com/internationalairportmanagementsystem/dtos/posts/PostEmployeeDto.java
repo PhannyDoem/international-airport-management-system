@@ -1,12 +1,12 @@
 package com.internationalairportmanagementsystem.dtos.posts;
 
-import java.time.LocalDateTime;
+import com.internationalairportmanagementsystem.enetity.UserEntity;
+
 
 public record PostEmployeeDto(
         String name,
         String role,
         String contactInfo,
-        String username,
-        String password
+        UserEntity userEntity
 ) {
 }

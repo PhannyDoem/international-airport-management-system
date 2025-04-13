@@ -1,9 +1,10 @@
 package com.internationalairportmanagementsystem.dtos.puts;
 
+import com.internationalairportmanagementsystem.enetity.Flight;
+
 public record PutCargoDto(
-        Long cargoId,
-        Long flightId,
         Double weight,
-        String dimensions
+        String dimension,
+        Flight flight
 ) {
 }

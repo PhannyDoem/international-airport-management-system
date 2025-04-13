@@ -1,8 +1,10 @@
 package com.internationalairportmanagementsystem.dtos.posts;
 
+import com.internationalairportmanagementsystem.enetity.Flight;
+
 public record PostCargoDto(
-        Long flightId,
         Double weight,
-        String dimensions
+        String dimension,
+        Flight flight
 ) {
 }

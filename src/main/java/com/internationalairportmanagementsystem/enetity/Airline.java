@@ -24,12 +24,6 @@ public class Airline {
     @JsonIgnoreProperties({"airline", "flights", "maintenances"})
     private List<Aircraft>  aircrafts;
 
-    @PreRemove
-    public void preRemove(){
-        for(Aircraft aircraft : aircrafts) {
-            aircraft.setAirline(null);
-        }
-    }
 
     public Airline() {}
 

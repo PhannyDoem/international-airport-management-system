@@ -50,11 +50,12 @@ public class Passenger {
 
     public Passenger() {}
 
-    public Passenger(String name, String passportNumber, String nationality, String contactDetails) {
+    public Passenger(String name, String passportNumber, String nationality, String contactDetails, UserEntity userEntity) {
         this.name = name;
         this.passportNumber = passportNumber;
         this.nationality = nationality;
         this.contactDetails = contactDetails;
+        this.userEntity = userEntity;
     }
 
     public List<Baggage> getBaggages() {

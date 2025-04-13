@@ -42,12 +42,12 @@ public class Ticket {
     }
 
 
-    public Ticket(String seatNumber, String aClass, Double price) {}
-
-    public Ticket(String seatNumber, String _class, BigDecimal price){
+    public Ticket(String seatNumber, String _class, BigDecimal price, BoardingPass boardingPass, Flight flight, Passenger passenger) {
         this.seatNumber = seatNumber;
         this._class = _class;
         this.price = price;
+        this.passenger = passenger;
+        this.flight = flight;
     }
 
     public String get_class() {

@@ -1,11 +1,17 @@
 package com.internationalairportmanagementsystem.dtos.puts;
 
+import com.internationalairportmanagementsystem.enetity.BoardingPass;
+import com.internationalairportmanagementsystem.enetity.Flight;
+import com.internationalairportmanagementsystem.enetity.Passenger;
+
+import java.math.BigDecimal;
+
 public record PutTicketDto(
-        Long ticketId,
-        Long flightId,
-        Long passengerId,
         String seatNumber,
         String _class,
-        Double price
+        BigDecimal price,
+        BoardingPass boardingPass,
+        Flight flight,
+        Passenger passenger
 ) {
 }

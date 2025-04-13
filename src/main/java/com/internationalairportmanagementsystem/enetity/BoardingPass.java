@@ -29,10 +29,10 @@ public class BoardingPass {
         // Default constructor
     }
 
-    public BoardingPass( String gate, LocalDateTime boardingTime) {
-
+    public BoardingPass( String gate, LocalDateTime boardingTime, Ticket ticket) {
         this.gate = gate;
         this.boardingTime = boardingTime;
+        this.ticket = ticket;
     }
 
     public Long getBoardingPassId() {

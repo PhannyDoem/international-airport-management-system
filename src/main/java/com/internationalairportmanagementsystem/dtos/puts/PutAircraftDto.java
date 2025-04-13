@@ -1,10 +1,11 @@
 package com.internationalairportmanagementsystem.dtos.puts;
 
+import com.internationalairportmanagementsystem.enetity.Airline;
+
 public record PutAircraftDto(
-        Long aircraftId,
         String tailNumber,
         String model,
         Integer capacity,
-        Long airlineId
+        Airline airline
 ) {
 }
