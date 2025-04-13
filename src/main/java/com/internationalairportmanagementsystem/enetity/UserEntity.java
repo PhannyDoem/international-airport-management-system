@@ -15,8 +15,6 @@ public class UserEntity {
     @Column(name = "password")
     private String password;
 
-
-    // Role role mto,
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     @JsonIgnoreProperties({"abilities", "user"})
@@ -26,7 +24,6 @@ public class UserEntity {
     @JsonIgnoreProperties({"baggages", "feedbacks", "checkIns", "tickets", "userEntity"})
     private Passenger passenger;
 
-    // Employee employee
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties({"flights", "userEntity"})
     private Employee employee;

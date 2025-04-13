@@ -13,7 +13,7 @@ public class Cargo {
     private Long cargoId;
     @Column(name = "weight")
     private Double weight;
-    @Column(name = "dimesion")
+    @Column(name = "dimension")
     private String dimension;
 
     @ManyToOne(fetch = FetchType.LAZY)

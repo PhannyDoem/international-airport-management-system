@@ -14,10 +14,7 @@ public class Ability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "abilities_id")
     private Long abilityId;
-
-    @Column(name = "entity")
     private String entity;
-
     @Column(name = "verb")
     private String verb;
 

@@ -20,7 +20,7 @@ public class Airport {
     private String name;
     @Column(name = "location_city")
     private String locationCity;
-    @Column(name = "lacation_country")
+    @Column(name = "location_country")
     private String locationCountry;
 
     @OneToMany(mappedBy = "departureAirport")
