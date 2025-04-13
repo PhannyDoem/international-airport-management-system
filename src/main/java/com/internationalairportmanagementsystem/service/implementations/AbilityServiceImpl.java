@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -29,8 +30,18 @@ public class AbilityServiceImpl implements AbilityService {
 
     @Override
     public Ability update(Long abilityId, PutAbilityDto putAbilityDto) {
-        Ability ability = abilityMapper.putToAbility(putAbilityDto);
-        return abilityRepository.save(ability);
+        if (abilityId != null) {
+            abilityRepository.findById(abilityId).stream().findFirst().map(
+                    updateAbility -> {
+                        updateAbility.setEntity(putAbilityDto.entity());
+                        updateAbility.setField(putAbilityDto.field());
+                        updateAbility.setVerb(putAbilityDto.verb());
+                        Ability ability = abilityRepository.save(updateAbility);
+                        return abilityRepository.save(ability);
+                    }
+            );
+        }
+        return abilityRepository.findById(Objects.requireNonNull(abilityId)).orElseThrow(()-> new RuntimeException("Ability not found"));
     }
 
     @Override

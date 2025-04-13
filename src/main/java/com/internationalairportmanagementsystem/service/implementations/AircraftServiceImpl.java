@@ -3,6 +3,7 @@ package com.internationalairportmanagementsystem.service.implementations;
 import com.internationalairportmanagementsystem.dtos.posts.PostAircraftDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutAircraftDto;
 import com.internationalairportmanagementsystem.enetity.Aircraft;
+import com.internationalairportmanagementsystem.enetity.Flight;
 import com.internationalairportmanagementsystem.mappers.AircraftMapper;
 import com.internationalairportmanagementsystem.repository.AircraftRepository;
 import com.internationalairportmanagementsystem.service.interfaces.AircraftService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -30,8 +32,20 @@ public class AircraftServiceImpl implements AircraftService {
 
     @Override
     public Aircraft update(Long aircraftId, PutAircraftDto putAircraftDto) {
-        Aircraft aircraft = aircraftMapper.putToAircraft(putAircraftDto);
-       return aircraftRepository.save(aircraft);
+        if (aircraftId != null) {
+            aircraftRepository.findById(aircraftId).stream().findFirst().map(
+                    updatedAircraft -> {
+                       updatedAircraft.setTailNumber(putAircraftDto.tailNumber());
+                       updatedAircraft.setModel(putAircraftDto.model());
+                       updatedAircraft.setCapacity(putAircraftDto.capacity());
+                       updatedAircraft.setAirline(putAircraftDto.airline());
+                       Aircraft aircraft = aircraftRepository.save(updatedAircraft);
+                       return aircraftRepository.save(aircraft);
+                    }
+            );
+        }
+        return aircraftRepository.findById(Objects.requireNonNull(aircraftId))
+                .orElseThrow(()-> new RuntimeException("Aircraft not found"));
     }
 
     @Override
