@@ -100,9 +100,9 @@ public class AbilityRestController {
                     )
             }
     )
-    @PutMapping("/abilities")
-    public ResponseEntity<Ability> update(@RequestBody PutAbilityDto putAbilityDto){
-        return new ResponseEntity<>(abilityService.update(, putAbilityDto), HttpStatus.OK);
+    @PutMapping("/abilities/{abilityId}")
+    public ResponseEntity<Ability> update(@PathVariable Long abilityId,@RequestBody PutAbilityDto putAbilityDto){
+        return new ResponseEntity<>(abilityService.update(abilityId, putAbilityDto), HttpStatus.OK);
     }
 
     @Operation(
