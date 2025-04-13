@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface RoleService {
     Role create(PostRoleDto postRoleDto);
-    Role update(PutRoleDto  putRoleDto);
+    Role update(Long roleId, PutRoleDto  putRoleDto);
     List<Role> findAll();
     Role findById(Long roleId);
     Boolean existsByRoleName(String roleName);

@@ -29,7 +29,7 @@ public class GateAssignmentServiceImpl implements GateAssignmentService {
     }
 
     @Override
-    public GateAssignment update(PutGateAssignmentDto putGateAssignmentDto) {
+    public GateAssignment update(Long assignmentId, PutGateAssignmentDto putGateAssignmentDto) {
         GateAssignment gateAssignment =  gateAssignmentMapper.putToAssignment(putGateAssignmentDto);
         return gateAssignmentRepository.save(gateAssignment);
     }

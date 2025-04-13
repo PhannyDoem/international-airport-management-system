@@ -11,29 +11,20 @@ public class BoardingPassMapper {
     public BoardingPass postToBoardingPass(PostBoardingPassDto postBoardingPassDto) {
         BoardingPass boardingPass = new BoardingPass(
                 postBoardingPassDto.gate(),
-                postBoardingPassDto.boardingTime()
+                postBoardingPassDto.boardingTime(),
+                postBoardingPassDto.ticket()
         );
         boardingPass.setBoardingPassId(0L);
-        if (postBoardingPassDto.ticketId() != null) {
-            Ticket ticket = new Ticket();
-            ticket.setTicketId(postBoardingPassDto.ticketId());
-            boardingPass.setTicket(ticket);
-        }
         return boardingPass;
     }
 
     public BoardingPass putToBoardingPass(PutBoardingPassDto putBoardingPassDto) {
         BoardingPass boardingPass = new BoardingPass(
                 putBoardingPassDto.gate(),
-                putBoardingPassDto.boardingTime()
+                putBoardingPassDto.boardingTime(),
+                putBoardingPassDto.ticket()
         );
-        boardingPass.setBoardingPassId(putBoardingPassDto.boardingPassId());
-
-        if(putBoardingPassDto.ticketId() != null) {
-            Ticket ticket = new Ticket();
-            ticket.setTicketId(putBoardingPassDto.ticketId());
-            boardingPass.setTicket(ticket);
-        }
+        boardingPass.setBoardingPassId(0L);
         return boardingPass;
     }
 }

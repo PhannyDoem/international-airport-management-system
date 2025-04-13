@@ -108,7 +108,7 @@ public class AirportServiceRestController {
     )
     @PutMapping("/private/airport_services")
     public AirportService updateAirportService(@RequestBody PutAirportServiceDto putAirportServiceDto){
-        return airportServiceService.update(putAirportServiceDto);
+        return airportServiceService.update(, putAirportServiceDto);
     }
 
     @Operation(

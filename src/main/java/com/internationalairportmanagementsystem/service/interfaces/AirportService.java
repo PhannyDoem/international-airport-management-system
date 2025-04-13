@@ -11,7 +11,7 @@ public interface AirportService {
 
     Airport create(PostAirportDto postAirportDto);
 
-    Airport update(PutAirportDto putAirportDto);
+    Airport update(Long airportId, PutAirportDto putAirportDto);
 
     Airport findById(Long airportId);
 

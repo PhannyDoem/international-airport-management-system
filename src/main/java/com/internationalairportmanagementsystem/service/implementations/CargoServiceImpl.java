@@ -2,7 +2,6 @@ package com.internationalairportmanagementsystem.service.implementations;
 
 import com.internationalairportmanagementsystem.dtos.posts.PostCargoDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutCargoDto;
-import com.internationalairportmanagementsystem.enetity.Baggage;
 import com.internationalairportmanagementsystem.enetity.Cargo;
 import com.internationalairportmanagementsystem.mappers.CargoMapper;
 import com.internationalairportmanagementsystem.repository.CargoRepository;
@@ -29,7 +28,7 @@ public class CargoServiceImpl implements CargoService {
     }
 
     @Override
-    public Cargo update(PutCargoDto putCargoDto) {
+    public Cargo update(Long cargoId, PutCargoDto putCargoDto) {
         Cargo cargo = cargoMapper.putToCargo(putCargoDto);
         return cargoRepository.save(cargo);
     }

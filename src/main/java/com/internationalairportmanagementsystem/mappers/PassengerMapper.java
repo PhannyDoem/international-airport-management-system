@@ -22,11 +22,11 @@ public class PassengerMapper {
                 postPassengerDto.name(),
                 postPassengerDto.passportNumber(),
                 postPassengerDto.nationality(),
-                postPassengerDto.nationality()
+                postPassengerDto.nationality(),
+                postPassengerDto.userEntity()
         );
         passenger.setPassengerId(0L);
-        UserEntity user = new UserEntity(postPassengerDto.username(),
-                passwordEncoder.encode(postPassengerDto.password()));
+        UserEntity user = new UserEntity(postPassengerDto.userEntity().getUsername(), passwordEncoder.encode(postPassengerDto.userEntity().getPassword()));
         passenger.setUserEntity(user);
         return passenger;
     }
@@ -36,11 +36,11 @@ public class PassengerMapper {
                 putPassengerDto.name(),
                 putPassengerDto.passportNumber(),
                 putPassengerDto.nationality(),
-                putPassengerDto.nationality()
+                putPassengerDto.nationality(),
+                putPassengerDto.userEntity()
         );
-        passenger.setPassengerId(putPassengerDto.passengerId());
-        UserEntity user = new UserEntity(putPassengerDto.username(),
-                passwordEncoder.encode(putPassengerDto.password()));
+        passenger.setPassengerId(0L);
+        UserEntity user = new UserEntity(putPassengerDto.userEntity().getUsername(), passwordEncoder.encode(putPassengerDto.userEntity().getPassword()));
         passenger.setUserEntity(user);
         return passenger;
     }

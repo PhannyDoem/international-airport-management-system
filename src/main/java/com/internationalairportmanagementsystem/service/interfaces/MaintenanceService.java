@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MaintenanceService {
     Maintenance create(PostMaintenanceDto postMaintenanceDto);
-    Maintenance update(PutMaintenanceDto putMaintenanceDto);
+    Maintenance update(Long maintenanceId, PutMaintenanceDto putMaintenanceDto);
 
     List<Maintenance> findAll();
     Maintenance findById(Long maintenanceId);

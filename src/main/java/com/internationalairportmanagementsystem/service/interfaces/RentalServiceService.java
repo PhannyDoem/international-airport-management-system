@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface RentalServiceService {
     RentalService create(PostRentalServiceDto postRentalService);
-    RentalService update(PutRentalServiceDto  putRentalServiceDto);
+    RentalService update(Long rentalId, PutRentalServiceDto  putRentalServiceDto);
     List<RentalService> findAll();
     RentalService findById(Long rentalServiceId);
     String deleteById(Long rentalServiceId);

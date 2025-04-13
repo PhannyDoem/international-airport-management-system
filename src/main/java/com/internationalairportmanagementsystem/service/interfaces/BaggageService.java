@@ -5,6 +5,7 @@ import com.internationalairportmanagementsystem.dtos.puts.PutBaggageDto;
 import com.internationalairportmanagementsystem.enetity.Baggage;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BaggageService {
     Baggage create(PostBaggageDto  postBaggageDto);
@@ -17,7 +18,7 @@ public interface BaggageService {
 
     String deleteById(Long baggageId);
 
-    List<Baggage> findByPassengerId(Long passengerId);
+    Optional<Baggage> findByPassengerId(Long passengerId);
 
     String deleteAll();
 }

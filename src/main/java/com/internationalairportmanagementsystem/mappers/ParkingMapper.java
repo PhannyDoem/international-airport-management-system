@@ -22,7 +22,7 @@ public class ParkingMapper {
                 putParkingDto.capacity(),
                 putParkingDto.rate()
         );
-        parking.setPartId(putParkingDto.parkingId());
+        parking.setPartId(0L);
         return parking;
     }
 }

@@ -31,11 +31,10 @@ public class RoleAbilityServiceImpl implements RoleAbilityService {
     }
 
     @Override
-    public String deleteByRoleIdAndAbilityId(Long roleId, Long abilityId) {
+    public void deleteByRoleIdAndAbilityId(Long roleId, Long abilityId) {
         Role role = roleService.findById(roleId);
         Ability ability = abilityService.findById(abilityId);
         role.getAbilities().remove(ability);
         roleRepository.save(role);
-        return "Role Deleted Successfully";
     }
 }

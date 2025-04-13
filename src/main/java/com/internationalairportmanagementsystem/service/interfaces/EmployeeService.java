@@ -10,7 +10,7 @@ public interface EmployeeService {
 
     Employee create(PostEmployeeDto  postEmployeeDto);
 
-    Employee update(PutEmployeeDto putEmployeeDto);
+    Employee update(Long employeeId,PutEmployeeDto putEmployeeDto);
 
     List<Employee> findAll();
 

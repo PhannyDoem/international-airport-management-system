@@ -95,7 +95,7 @@ public class FlightScheduleRestController {
     )
     @PutMapping("/private/flight_schedules")
     public FlightSchedule updateFlightSchedule(@RequestBody PutFlightScheduleDto putFlightScheduleDto) {
-        return flightScheduleService.update(putFlightScheduleDto);
+        return flightScheduleService.update(, putFlightScheduleDto);
     }
 
     @Operation(

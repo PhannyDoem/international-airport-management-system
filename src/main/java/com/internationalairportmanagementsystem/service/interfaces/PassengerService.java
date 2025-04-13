@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PassengerService {
     Passenger create(PostPassengerDto postPassengerDto);
-    Passenger update(PutPassengerDto putPassengerDto);
+    Passenger update(Long passengerId, PutPassengerDto putPassengerDto);
     List<Passenger> findAll();
     Passenger findById(Long passengerId);
     Passenger findByUserEntityId(Long userEntityId);

@@ -12,39 +12,22 @@ public class FeedbackMapper {
     public Feedback postToFeedback(PostFeedbackDto  postFeedbackDto){
         Feedback feedback = new Feedback(
                 postFeedbackDto.content(),
-                postFeedbackDto.status()
+                postFeedbackDto.status(),
+                postFeedbackDto.passenger(),
+                postFeedbackDto.flight()
         );
         feedback.setFeedbackId(0L);
-
-        if(postFeedbackDto.passengerId() != null){
-            Passenger passenger = new Passenger();
-            passenger.setPassengerId(postFeedbackDto.passengerId());
-            feedback.setPassenger(passenger);
-        }
-        if(postFeedbackDto.flightId() != null){
-            Flight flight = new Flight();
-            flight.setFlightId(postFeedbackDto.flightId());
-            feedback.setFlight(flight);
-        }
         return feedback;
     }
 
     public Feedback putToFeedback(PutFeedbackDto putFeedbackDto){
         Feedback feedback = new Feedback(
                 putFeedbackDto.content(),
-                putFeedbackDto.status()
+                putFeedbackDto.status(),
+                putFeedbackDto.passenger(),
+                putFeedbackDto.flight()
         );
-        feedback.setFeedbackId(putFeedbackDto.feedbackId());
-        if(putFeedbackDto.passengerId() != null){
-            Passenger passenger = new Passenger();
-            passenger.setPassengerId(putFeedbackDto.passengerId());
-            feedback.setPassenger(passenger);
-        }
-        if(putFeedbackDto.flightId() != null){
-            Flight flight = new Flight();
-            flight.setFlightId(putFeedbackDto.flightId());
-            feedback.setFlight(flight);
-        }
+        feedback.setFeedbackId(0L);
         return feedback;
     }
 }

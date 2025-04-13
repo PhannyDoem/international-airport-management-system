@@ -29,7 +29,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public Feedback update(PutFeedbackDto putFeedbackDto) {
+    public Feedback update(Long feedbackId, PutFeedbackDto putFeedbackDto) {
         Feedback feedback = feedbackMapper.putToFeedback(putFeedbackDto);
         return feedbackRepository.save(feedback);
     }

@@ -112,7 +112,7 @@ public class RoleRestController {
                 !putRoleDto.roleName().equals(role.getRoleName())) {
             throw new RoleAlreadyExistsException("A role with that name already exists!");
         }
-        return roleService.update(putRoleDto);
+        return roleService.update(, putRoleDto);
     }
 
     @Operation(

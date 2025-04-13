@@ -103,7 +103,7 @@ public class AirlineRestController {
     )
     @PutMapping("/private/airlines")
     public Airline updateAirline(@RequestBody PutAirlineDto putAirlineDto) {
-        return airlineService.update(putAirlineDto);
+        return airlineService.update(, putAirlineDto);
     }
 
     @Operation(

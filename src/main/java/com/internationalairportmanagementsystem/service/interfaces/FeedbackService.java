@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FeedbackService {
     Feedback create(PostFeedbackDto  postFeedbackDto);
-    Feedback update(PutFeedbackDto putFeedbackDto);
+    Feedback update(Long feedbackId, PutFeedbackDto putFeedbackDto);
     List<Feedback> findAll();
     Feedback findById(Long feedbackId);
     String deleteById(Long feedbackId);

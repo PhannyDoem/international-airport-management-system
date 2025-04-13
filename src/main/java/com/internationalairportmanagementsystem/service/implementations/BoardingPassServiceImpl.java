@@ -31,7 +31,7 @@ public class BoardingPassServiceImpl implements BoardingPassService {
     }
 
     @Override
-    public BoardingPass update(PutBoardingPassDto putBoardingPassDto) {
+    public BoardingPass update(Long boardingPassId, PutBoardingPassDto putBoardingPassDto) {
         BoardingPass boardingPass = boardingPassMapper.putToBoardingPass(putBoardingPassDto);
         return boardingPassRepository.save(boardingPass);
     }

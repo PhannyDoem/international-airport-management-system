@@ -26,7 +26,7 @@ public class AirportServiceServiceImpl implements AirportServiceService {
     }
 
     @Override
-    public AirportService update(PutAirportServiceDto putAirportServiceDto) {
+    public AirportService update(Long airportServiceId, PutAirportServiceDto putAirportServiceDto) {
         return null;
     }
 

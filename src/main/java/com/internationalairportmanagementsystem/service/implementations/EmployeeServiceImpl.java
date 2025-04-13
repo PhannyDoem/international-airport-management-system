@@ -9,7 +9,6 @@ import com.internationalairportmanagementsystem.repository.EmployeeRepository;
 import com.internationalairportmanagementsystem.repository.RoleRepository;
 import com.internationalairportmanagementsystem.repository.UserEntityRepository;
 import com.internationalairportmanagementsystem.service.interfaces.EmployeeService;
-import com.internationalairportmanagementsystem.service.interfaces.UserEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee update(PutEmployeeDto putEmployeeDto) {
+    public Employee update(Long employeeId, PutEmployeeDto putEmployeeDto) {
         Employee employee = employeeMapper.putToEmployee(putEmployeeDto);
         Role employeeRole = roleRepository.findByRoleName("Employee").get();
         employee.getUserEntity().setRole(employeeRole);

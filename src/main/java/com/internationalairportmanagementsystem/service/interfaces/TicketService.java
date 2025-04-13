@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TicketService {
     Ticket create(PostTicketDto  postTicketDto);
-    Ticket update(PutTicketDto putTicketDto);
+    Ticket update(Long ticketId,PutTicketDto putTicketDto);
     List<Ticket> findAll();
     Ticket findById(Long ticketId);
     List<Ticket> findByPassengerId(Long passengerId);

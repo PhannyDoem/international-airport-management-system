@@ -25,8 +25,7 @@ public class AirportMapper {
                 putAirportDto.locationCountry(),
                 putAirportDto.locationCountry()
         );
-        airport.setAirportId(putAirportDto.airportId());
-
+        airport.setAirportId(0L);
         return airport;
     }
 

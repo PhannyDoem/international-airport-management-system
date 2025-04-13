@@ -23,7 +23,7 @@ public class RentalServiceMapper {
                 putRentalServiceDto.description(),
                 putRentalServiceDto.rate()
         );
-        rentalService.setRentalServiceId(putRentalServiceDto.rentalId());
+        rentalService.setRentalServiceId(0L);
         return rentalService;
     }
 }

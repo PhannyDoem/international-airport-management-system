@@ -103,7 +103,7 @@ public class SecurityCheckpointRestController {
     )
     @PutMapping("/security_checkpoints")
     public SecurityCheckPoint updateSecurityCheckpoint(@RequestBody PutSecurityCheckpointDto putSecurityCheckpointDto){
-        return securityCheckpointService.update(putSecurityCheckpointDto);
+        return securityCheckpointService.update(, putSecurityCheckpointDto);
     }
 
     @Operation(

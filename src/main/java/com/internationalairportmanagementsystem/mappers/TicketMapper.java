@@ -13,34 +13,24 @@ public class TicketMapper {
         Ticket ticket = new Ticket(
                 postTicketDto.seatNumber(),
                 postTicketDto._class(),
-                postTicketDto.price()
+                postTicketDto.price(),
+                postTicketDto.boardingPass(),
+                postTicketDto.flight(),
+                postTicketDto.passenger()
         );
         ticket.setTicketId(0L);
-
-        Passenger passenger = new Passenger();
-        Flight flight = new Flight();
-        passenger.setPassengerId(postTicketDto.passengerId());
-        flight.setFlightId(postTicketDto.flightId());
-
-        ticket.setPassenger(passenger);
-        ticket.setFlight(flight);
         return ticket;
     }
     public Ticket putToTicket(PutTicketDto putTicketDto) {
         Ticket ticket = new Ticket(
                 putTicketDto.seatNumber(),
                 putTicketDto._class(),
-                putTicketDto.price()
+                putTicketDto.price(),
+                putTicketDto.boardingPass(),
+                putTicketDto.flight(),
+                putTicketDto.passenger()
         );
-        ticket.setTicketId(putTicketDto.ticketId());
-
-        Passenger passenger = new Passenger();
-        Flight flight = new Flight();
-        passenger.setPassengerId(putTicketDto.passengerId());
-        flight.setFlightId(putTicketDto.flightId());
-
-        ticket.setPassenger(passenger);
-        ticket.setFlight(flight);
+        ticket.setTicketId(0L);
         return ticket;
     }
 }

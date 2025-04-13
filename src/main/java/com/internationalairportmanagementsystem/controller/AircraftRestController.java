@@ -62,7 +62,7 @@ public class AircraftRestController {
     )
     @PutMapping("/aircraft")
     public ResponseEntity<Aircraft> update(@RequestBody PutAircraftDto putAircraftDto) {
-        return new ResponseEntity<>(aircraftService.update(putAircraftDto), HttpStatus.OK);
+        return new ResponseEntity<>(aircraftService.update(, putAircraftDto), HttpStatus.OK);
     }
     @Operation(
             description = "Get endpoint to retrieve all aircraft. This endpoint returns a list of all aircraft registered in the system.",

@@ -126,7 +126,7 @@ public class BoardingPassRestController {
     )
     @PutMapping("/boarding_passes")
     public BoardingPass updateBoardingPass(@RequestBody PutBoardingPassDto putBoardingPassDto){
-        return boardingPassService.update(putBoardingPassDto);
+        return boardingPassService.update(, putBoardingPassDto);
     }
 
     @Operation(

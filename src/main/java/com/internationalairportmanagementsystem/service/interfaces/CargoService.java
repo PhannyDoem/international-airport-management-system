@@ -9,7 +9,7 @@ import java.util.List;
 public interface CargoService {
     Cargo create(PostCargoDto  postCargoDto);
 
-    Cargo update(PutCargoDto putCargoDto);
+    Cargo update(Long cargoId, PutCargoDto putCargoDto);
 
     Cargo findById(Long cargoId);
 

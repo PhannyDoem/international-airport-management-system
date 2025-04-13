@@ -29,7 +29,7 @@ public class CheckInServiceImpl implements CheckInService {
     }
 
     @Override
-    public CheckIn update(PutCheckInDto putCheckInDto) {
+    public CheckIn update(Long checkInId, PutCheckInDto putCheckInDto) {
         CheckIn checkIn = checkInMapper.putToCheckIn(putCheckInDto);
         return checkInRepository.save(checkIn);
     }

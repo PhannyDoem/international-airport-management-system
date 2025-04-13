@@ -28,7 +28,7 @@ public class AbilityServiceImpl implements AbilityService {
     }
 
     @Override
-    public Ability update(PutAbilityDto putAbilityDto) {
+    public Ability update(Long abilityId, PutAbilityDto putAbilityDto) {
         Ability ability = abilityMapper.putToAbility(putAbilityDto);
         return abilityRepository.save(ability);
     }

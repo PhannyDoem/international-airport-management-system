@@ -28,7 +28,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    public Maintenance update(PutMaintenanceDto putMaintenanceDto) {
+    public Maintenance update(Long maintenanceId, PutMaintenanceDto putMaintenanceDto) {
         Maintenance maintenance = maintenanceMapper.putToMaintenance(putMaintenanceDto);
         return maintenanceRepository.save(maintenance);
     }

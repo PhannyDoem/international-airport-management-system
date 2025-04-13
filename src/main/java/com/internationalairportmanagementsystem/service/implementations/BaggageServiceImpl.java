@@ -59,7 +59,7 @@ public class BaggageServiceImpl implements BaggageService {
     }
 
     @Override
-    public List<Baggage> findByPassengerId(Long passengerId) {
+    public Optional<Baggage> findByPassengerId(Long passengerId) {
         return baggageRepository.findByPassengerId(passengerId);
     }
 

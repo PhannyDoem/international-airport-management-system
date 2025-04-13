@@ -9,7 +9,7 @@ public interface AirportServiceService {
 
     AirportService create(PostAirportServiceDto  postAirportServiceDto);
 
-    AirportService update(PutAirportServiceDto putAirportServiceDto);
+    AirportService update(Long airportServiceId, PutAirportServiceDto putAirportServiceDto);
 
     AirportService findById(Long serviceId);
 

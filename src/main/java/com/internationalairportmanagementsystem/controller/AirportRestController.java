@@ -117,7 +117,7 @@ public class AirportRestController {
     )
     @PutMapping("/private/airports")
     public Airport updateAirport(@RequestBody PutAirportDto puttAirportDto) {
-        return airportService.update(puttAirportDto);
+        return airportService.update(, puttAirportDto);
     }
 
 

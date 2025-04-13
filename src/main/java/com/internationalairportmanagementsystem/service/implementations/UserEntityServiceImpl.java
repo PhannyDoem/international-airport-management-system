@@ -31,7 +31,7 @@ public class UserEntityServiceImpl implements UserEntityService {
     }
 
     @Override
-    public UserEntity update(PutUserDto putUserDto) {
+    public UserEntity update(Long userId, PutUserDto putUserDto) {
         UserEntity user = userMapper.putToUser(putUserDto);
         return userEntityRepository.save(user);
     }

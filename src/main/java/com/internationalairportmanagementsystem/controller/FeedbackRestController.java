@@ -122,7 +122,7 @@ public class FeedbackRestController {
 
         UserEntity user = getAuthenticatedUser();
         authorizeAccess(user, tempFeedback);
-        return feedbackService.update(putFeedbackDto);
+        return feedbackService.update(, putFeedbackDto);
     }
     @Operation(
             description = "Endpoint to delete a feedback by ID",

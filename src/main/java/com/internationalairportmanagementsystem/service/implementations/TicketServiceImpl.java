@@ -29,7 +29,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Ticket update(PutTicketDto putTicketDto) {
+    public Ticket update(Long ticketId, PutTicketDto putTicketDto) {
         Ticket ticket = ticketMapper.putToTicket(putTicketDto);
         return ticketRepository.save(ticket);
     }

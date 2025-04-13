@@ -12,15 +12,10 @@ public class AircraftMapper {
         Aircraft aircraft = new Aircraft(
                 postAircraftDto.tailNumber(),
                 postAircraftDto.model(),
-                postAircraftDto.capacity()
+                postAircraftDto.capacity(),
+                postAircraftDto.airline()
         );
         aircraft.setAircraftId(0L);
-
-        if (postAircraftDto.aircraftId() != null){
-            Airline airline = new  Airline();
-            airline.setAirlineId(postAircraftDto.aircraftId());
-            aircraft.setAirline(airline);
-        }
         return aircraft;
     }
 
@@ -28,15 +23,10 @@ public class AircraftMapper {
         Aircraft aircraft = new Aircraft(
                 putAircraftDto.tailNumber(),
                 putAircraftDto.model(),
-                putAircraftDto.capacity()
+                putAircraftDto.capacity(),
+                putAircraftDto.airline()
         );
-        aircraft.setAircraftId(putAircraftDto.aircraftId());
-
-        if(putAircraftDto.airlineId() != null){
-            Airline airline = new  Airline();
-            airline.setAirlineId(putAircraftDto.airlineId());
-            aircraft.setAirline(airline);
-        }
+        aircraft.setAircraftId(0L);
         return aircraft;
     }
 }

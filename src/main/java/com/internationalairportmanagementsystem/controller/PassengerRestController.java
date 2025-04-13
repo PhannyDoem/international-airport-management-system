@@ -187,7 +187,7 @@ public class PassengerRestController {
 
         UserEntity user1 = getAuthenticatedUser();
         authorizeAccess(user1, thePassenger);
-        passengerService.update(putPassengerDto);
+        passengerService.update(, putPassengerDto);
 
         return new ResponseEntity<>("Passenger updated successfully!", HttpStatus.OK);
     }

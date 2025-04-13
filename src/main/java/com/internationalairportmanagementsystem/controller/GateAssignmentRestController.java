@@ -97,7 +97,7 @@ public class GateAssignmentRestController {
     )
     @PutMapping("/private/gate_assignments")
     public GateAssignment updateGateAssignment(@RequestBody PutGateAssignmentDto putGateAssignmentDto) {
-        return gateAssignmentService.update(putGateAssignmentDto);
+        return gateAssignmentService.update(, putGateAssignmentDto);
     }
 
     @Operation(

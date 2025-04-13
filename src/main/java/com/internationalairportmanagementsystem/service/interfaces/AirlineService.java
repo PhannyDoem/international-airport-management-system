@@ -12,7 +12,7 @@ public interface AirlineService {
     Airline create(PostAirlineDto postAirlineDto);
 
 
-    Airline update(PutAirlineDto  putAirlineDto);
+    Airline update(Long airlineId, PutAirlineDto  putAirlineDto);
 
     List<Airline>  findAll();
 

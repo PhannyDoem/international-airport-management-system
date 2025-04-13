@@ -11,7 +11,7 @@ public interface AircraftService {
     Aircraft create(PostAircraftDto postAircraftDto);
 
 
-    Aircraft update(PutAircraftDto putAircraftDto);
+    Aircraft update(Long aircraftId, PutAircraftDto putAircraftDto);
 
     Aircraft findById(Long aircraftId);
 

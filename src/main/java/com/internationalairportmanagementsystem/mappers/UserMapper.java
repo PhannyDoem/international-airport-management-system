@@ -11,11 +11,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserMapper {
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserMapper(PassengerMapper passengerMapper) {
-
+    public UserMapper(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -32,12 +31,7 @@ public class UserMapper {
         UserEntity user = new UserEntity();
         user.setUsername(putUserDto.username());
         user.setPassword(passwordEncoder.encode(putUserDto.password()));
-        user.setUserId(putUserDto.userId());
-        if(putUserDto.roleId() != null){
-            Role role = new Role();
-            role.setRoleId(putUserDto.roleId());
-            user.setRole(role);
-        }
+        user.setUserId(0L);
         return user;
 
     }

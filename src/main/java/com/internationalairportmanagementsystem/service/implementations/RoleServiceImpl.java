@@ -28,7 +28,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role update(PutRoleDto putRoleDto) {
+    public Role update(Long roleId, PutRoleDto putRoleDto) {
         Role role = roleMapper.putToRole(putRoleDto);
         return roleRepository.save(role);
     }

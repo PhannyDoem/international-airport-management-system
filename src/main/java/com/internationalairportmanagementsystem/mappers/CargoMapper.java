@@ -11,24 +11,20 @@ public class CargoMapper {
     public Cargo postToCargo(PostCargoDto postCargoDto) {
         Cargo cargo = new Cargo(
                 postCargoDto.weight(),
-                postCargoDto.dimensions()
+                postCargoDto.dimension(),
+                postCargoDto.flight()
         );
         cargo.setCargoId(0L);
-        Flight  flight = new Flight();
-        flight.setFlightId(postCargoDto.flightId());
-        cargo.setFlight(flight);
         return cargo;
     }
 
     public Cargo putToCargo(PutCargoDto putCargoDto) {
         Cargo cargo = new Cargo(
                 putCargoDto.weight(),
-                putCargoDto.dimensions()
+                putCargoDto.dimension(),
+                putCargoDto.flight()
         );
-        cargo.setCargoId(putCargoDto.cargoId());
-        Flight   flight = new Flight();
-        flight.setFlightId(putCargoDto.flightId());
-        cargo.setFlight(flight);
+        cargo.setCargoId(0L);
         return cargo;
     }
 }

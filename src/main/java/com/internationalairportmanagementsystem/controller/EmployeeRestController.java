@@ -179,7 +179,7 @@ public class EmployeeRestController {
 
         UserEntity user1 = getAuthenticatedUser();
         authorizeAccess(user1, theEmployee);
-        employeeService.update(putEmployeeDto);
+        employeeService.update(, putEmployeeDto);
         return new ResponseEntity<>("Employee updated successfully!", HttpStatus.OK);
     }
 

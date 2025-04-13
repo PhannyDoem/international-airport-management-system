@@ -12,11 +12,10 @@ public class FlightScheduleMapper {
        FlightSchedule  flightSchedule = new FlightSchedule(
                postFlightScheduleDto.scheduledDepartureTime(),
                postFlightScheduleDto.scheduledArrivalTime(),
-               postFlightScheduleDto.status()
+               postFlightScheduleDto.status(),
+               postFlightScheduleDto.flight()
        );
-       Flight flight = new Flight();
-       flight.setFlightId(postFlightScheduleDto.flightId());
-       flightSchedule.setFlight(flight);
+       flightSchedule.setScheduleId(0L);
        return flightSchedule;
    }
 
@@ -24,12 +23,10 @@ public class FlightScheduleMapper {
        FlightSchedule flightSchedule = new FlightSchedule(
                putFlightScheduleDto.scheduledDepartureTime(),
                putFlightScheduleDto.scheduledArrivalTime(),
-               putFlightScheduleDto.status()
+               putFlightScheduleDto.status(),
+               putFlightScheduleDto.flight()
        );
-       flightSchedule.setScheduleId(putFlightScheduleDto.scheduleId());
-       Flight flight = new Flight();
-       flight.setFlightId(putFlightScheduleDto.flightId());
-       flightSchedule.setFlight(flight);
+       flightSchedule.setScheduleId(0L);
        return flightSchedule;
    }
 }

@@ -173,7 +173,7 @@ public class UserRestController {
                 !putUserDto.username().equals(user.getUsername())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
-        userEntityService.update(putUserDto);
+        userEntityService.update(, putUserDto);
         return new ResponseEntity<>("User updated success!", HttpStatus.OK);
     }
 

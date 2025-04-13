@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserEntityService {
     UserEntity create(PostUserDto postUserDto);
-    UserEntity update(PutUserDto putUserDto);
+    UserEntity update(Long userId,PutUserDto putUserDto);
     List<UserEntity> findAll();
     Boolean existsByUsername(String username);
     UserEntity findByUsername(String username);

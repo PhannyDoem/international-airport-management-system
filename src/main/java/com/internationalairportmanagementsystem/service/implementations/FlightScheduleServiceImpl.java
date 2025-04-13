@@ -29,7 +29,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public FlightSchedule update(PutFlightScheduleDto putFlightScheduleDto) {
+    public FlightSchedule update(Long flightScheduleId, PutFlightScheduleDto putFlightScheduleDto) {
         FlightSchedule flightSchedule = flightScheduleMapper.putToSchedule(putFlightScheduleDto);
         return flightScheduleRepository.save(flightSchedule);
     }

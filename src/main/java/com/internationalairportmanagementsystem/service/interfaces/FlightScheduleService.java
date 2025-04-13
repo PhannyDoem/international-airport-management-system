@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FlightScheduleService {
     FlightSchedule create(PostFlightScheduleDto  postFlightScheduleDto);
-    FlightSchedule update(PutFlightScheduleDto putFlightScheduleDto);
+    FlightSchedule update(Long flightScheduleId, PutFlightScheduleDto putFlightScheduleDto);
     FlightSchedule findById(Long scheduleId);
     List<FlightSchedule> findAll();
     String deleteById(Long scheduleId);

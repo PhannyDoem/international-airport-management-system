@@ -11,29 +11,21 @@ public class GateAssignmentMapper {
     public GateAssignment postToAssignment(PostGateAssignmentDto postGateAssignmentDto) {
         GateAssignment gateAssignment = new GateAssignment(
                 postGateAssignmentDto.gate(),
-                postGateAssignmentDto.assignmentTime()
+                postGateAssignmentDto.assignedTime(),
+                postGateAssignmentDto.flight()
+
         );
         gateAssignment.setAssignmentId(0L);
-        if (postGateAssignmentDto.flightId() != null) {
-            Flight flight = new Flight();
-            flight.setFlightId(postGateAssignmentDto.flightId());
-            gateAssignment.setFlight(flight);
-        }
         return gateAssignment;
     }
 
     public GateAssignment putToAssignment(PutGateAssignmentDto putGateAssignmentDto) {
         GateAssignment gateAssignment = new GateAssignment(
                 putGateAssignmentDto.gate(),
-                putGateAssignmentDto.assignmentTime()
+                putGateAssignmentDto.assignedTime(),
+                putGateAssignmentDto.flight()
         );
-        gateAssignment.setAssignmentId(putGateAssignmentDto.assignmentId());
-
-        if(putGateAssignmentDto.flightId() != null) {
-            Flight flight = new Flight();
-            flight.setFlightId(putGateAssignmentDto.flightId());
-            gateAssignment.setFlight(flight);
-        }
+        gateAssignment.setAssignmentId(0L);
         return gateAssignment;
     }
 }

@@ -102,7 +102,7 @@ public class AbilityRestController {
     )
     @PutMapping("/abilities")
     public ResponseEntity<Ability> update(@RequestBody PutAbilityDto putAbilityDto){
-        return new ResponseEntity<>(abilityService.update(putAbilityDto), HttpStatus.OK);
+        return new ResponseEntity<>(abilityService.update(, putAbilityDto), HttpStatus.OK);
     }
 
     @Operation(

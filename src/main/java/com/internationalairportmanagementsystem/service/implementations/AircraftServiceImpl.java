@@ -29,7 +29,7 @@ public class AircraftServiceImpl implements AircraftService {
     }
 
     @Override
-    public Aircraft update(PutAircraftDto putAircraftDto) {
+    public Aircraft update(Long aircraftId, PutAircraftDto putAircraftDto) {
         Aircraft aircraft = aircraftMapper.putToAircraft(putAircraftDto);
        return aircraftRepository.save(aircraft);
     }

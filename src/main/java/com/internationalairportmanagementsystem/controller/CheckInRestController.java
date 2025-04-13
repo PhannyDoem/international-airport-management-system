@@ -127,7 +127,7 @@ public class CheckInRestController {
     )
     @PutMapping("/check_ins")
     public CheckIn updateCheckIn(@RequestBody PutCheckInDto putCheckInDto){
-        return checkInService.update(putCheckInDto);
+        return checkInService.update(, putCheckInDto);
     }
 
     @Operation(

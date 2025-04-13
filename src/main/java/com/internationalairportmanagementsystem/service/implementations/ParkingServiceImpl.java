@@ -30,7 +30,7 @@ public class ParkingServiceImpl implements ParkingService {
     }
 
     @Override
-    public Parking update(PutParkingDto putParkingDto) {
+    public Parking update(Long parkingId, PutParkingDto putParkingDto) {
         Parking parking = parkingMapper.putToParking(putParkingDto);
         return parkingRepository.save(parking);
     }

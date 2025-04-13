@@ -33,7 +33,7 @@ public class SecurityCheckpointServiceImpl implements SecurityCheckpointService 
     }
 
     @Override
-    public SecurityCheckPoint update(PutSecurityCheckpointDto putSecurityCheckpointDto) {
+    public SecurityCheckPoint update(Long securityId, PutSecurityCheckpointDto putSecurityCheckpointDto) {
         SecurityCheckPoint securityCheckPoint = securityCheckpointMapper
                 .putToSecurityCheckpoint(putSecurityCheckpointDto);
         return securityCheckpointRepository.save(securityCheckPoint);

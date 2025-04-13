@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface GateAssignmentService {
     GateAssignment create(PostGateAssignmentDto postGateAssignmentDto);
-    GateAssignment update(PutGateAssignmentDto putGateAssignmentDto);
+    GateAssignment update(Long assignmentId,PutGateAssignmentDto putGateAssignmentDto);
     GateAssignment findById(Long assignmentId);
     List<GateAssignment> findAll();
     String deleteById(Long assignmentId);

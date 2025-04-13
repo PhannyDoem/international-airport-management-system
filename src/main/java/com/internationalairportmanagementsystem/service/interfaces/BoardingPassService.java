@@ -9,7 +9,7 @@ import java.util.List;
 public interface BoardingPassService {
     BoardingPass create(PostBoardingPassDto  postBoardingPassDto);
 
-    BoardingPass update(PutBoardingPassDto putBoardingPassDto);
+    BoardingPass update(Long boardingPassId, PutBoardingPassDto putBoardingPassDto);
 
     List<BoardingPass> findAll();
 

@@ -99,7 +99,7 @@ public class ParkingRestController {
     )
     @PutMapping("/private/parkings")
     public Parking updateParking(@RequestBody PutParkingDto putParkingDto){
-        return parkingService.update(putParkingDto);
+        return parkingService.update(, putParkingDto);
     }
 
     @Operation(

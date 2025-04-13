@@ -35,11 +35,10 @@ public class FlightCrewServiceImpl implements FlightCrewService {
     }
 
     @Override
-    public String deleteByFlightAndEmployeeId(Long flightId, Long employeeId) {
+    public void deleteByFlightIdAndEmployeeId(Long flightId, Long employeeId) {
         Flight flight = flightService.findById(flightId);
         Employee employee = employeeService.findById(employeeId);
         flight.getEmployees().remove(employee);
         flightRepository.save(flight);
-        return "Delete.";
     }
 }

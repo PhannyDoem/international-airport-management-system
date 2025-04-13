@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface SecurityCheckpointService {
     SecurityCheckPoint create(PostSecurityCheckpointDto  postSecurityCheckpointDto);
-    SecurityCheckPoint update(PutSecurityCheckpointDto putSecurityCheckpointDto);
+    SecurityCheckPoint update(Long securityId,PutSecurityCheckpointDto putSecurityCheckpointDto);
     SecurityCheckPoint findById(Long securityCheckPointId);
     List<SecurityCheckPoint> findAll();
     String deleteById(Long securityCheckPointId);

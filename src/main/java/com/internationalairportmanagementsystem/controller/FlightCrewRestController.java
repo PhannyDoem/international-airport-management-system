@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/private")
 public class FlightCrewRestController {
@@ -60,7 +58,7 @@ public class FlightCrewRestController {
     )
     @DeleteMapping("/flight_crews/{flightId}/{employeeId}")
     public String deleteFlightCrewById(@PathVariable Long flightId, @PathVariable Long employeeId) {
-        flightCrewService.deleteByFlightAndEmployeeId(flightId, employeeId);
+        flightCrewService.deleteByFlightIdAndEmployeeId(flightId, employeeId);
         return "Deleted flight crew with id - " +  flightId + "-" + employeeId;
     }
 

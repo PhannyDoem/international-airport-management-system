@@ -39,7 +39,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public Passenger update(PutPassengerDto putPassengerDto) {
+    public Passenger update(Long passengerId, PutPassengerDto putPassengerDto) {
         Passenger passenger = passengerMapper.putToPassenger(putPassengerDto);
         return passengerRepository.save(passenger);
     }

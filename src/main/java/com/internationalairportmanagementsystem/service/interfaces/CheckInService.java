@@ -9,7 +9,7 @@ import java.util.List;
 public interface CheckInService {
     CheckIn create(PostCheckInDto  postCheckInDto);
 
-    CheckIn update(PutCheckInDto putCheckInDto);
+    CheckIn update(Long checkInId,PutCheckInDto putCheckInDto);
 
     CheckIn findById(Long checkInId);
 

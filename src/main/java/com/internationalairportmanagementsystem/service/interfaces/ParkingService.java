@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ParkingService {
     Parking create(PostParkingDto postParkingDto);
-    Parking update(PutParkingDto putParkingDto);
+    Parking update(Long parkingId, PutParkingDto putParkingDto);
     List<Parking> findAll();
     Parking findById(Long parkingId);
     String deleteById(Long parkingId);

@@ -110,7 +110,7 @@ public class CargoRestController {
     )
     @PutMapping("/cargo")
     public Cargo updateCargo(@RequestBody PutCargoDto putCargoDto){
-        Cargo dbCargo = cargoService.update(putCargoDto);
+        Cargo dbCargo = cargoService.update(, putCargoDto);
         return dbCargo;
     }
 

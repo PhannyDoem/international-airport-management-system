@@ -13,8 +13,8 @@ import java.util.List;
 
 @Service
 public class AirlineServiceImpl implements AirlineService {
-    private AirlineRepository airlineRepository;
-    private AirlineMapper airlineMapper;
+    private final AirlineRepository airlineRepository;
+    private final AirlineMapper airlineMapper;
 
     @Autowired
     public AirlineServiceImpl(AirlineRepository airlineRepository, AirlineMapper airlineMapper) {
@@ -24,11 +24,12 @@ public class AirlineServiceImpl implements AirlineService {
 
     @Override
     public Airline create(PostAirlineDto postAirlineDto) {
-        return airlineMapper.postToAirline(postAirlineDto);
+        Airline airline = airlineMapper.postToAirline(postAirlineDto);
+        return airlineRepository.save(airline);
     }
 
     @Override
-    public Airline update(PutAirlineDto putAirlineDto) {
+    public Airline update(Long airlineId, PutAirlineDto putAirlineDto) {
         return airlineMapper.putToAirline(putAirlineDto);
     }
 

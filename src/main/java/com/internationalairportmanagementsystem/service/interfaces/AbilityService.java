@@ -11,7 +11,7 @@ public interface AbilityService {
     Ability create(PostAbilityDto postAbilityDto);
 
 
-    Ability update(PutAbilityDto putAbilityDto);
+    Ability update(Long abilityId, PutAbilityDto putAbilityDto);
 
     Ability findById(Long abilityId);
 

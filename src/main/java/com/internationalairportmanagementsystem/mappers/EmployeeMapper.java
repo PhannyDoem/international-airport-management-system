@@ -22,11 +22,12 @@ public class EmployeeMapper {
         Employee employee = new Employee(
                 postEmployeeDto.name(),
                 postEmployeeDto.role(),
-                postEmployeeDto.contactInfo()
+                postEmployeeDto.contactInfo(),
+                postEmployeeDto.userEntity()
         );
         employee.setEmployeeId(0L);
-        UserEntity user = new UserEntity(postEmployeeDto.username()
-                ,passwordEncoder.encode(postEmployeeDto.password()));
+        UserEntity user = new UserEntity(postEmployeeDto.userEntity().getUsername(),
+                passwordEncoder.encode(postEmployeeDto.userEntity().getPassword()));
         employee.setUserEntity(user);
         return employee;
     }
@@ -35,12 +36,12 @@ public class EmployeeMapper {
         Employee employee = new Employee(
                 putEmployeeDto.name(),
                 putEmployeeDto.role(),
-                putEmployeeDto.contactInfo()
+                putEmployeeDto.contactInfo(),
+                putEmployeeDto.userEntity()
         );
-        employee.setEmployeeId(putEmployeeDto.employeeId());
-        UserEntity user = new UserEntity(putEmployeeDto.username(),
-         passwordEncoder.encode(putEmployeeDto.password()));
-
+        employee.setEmployeeId(0L);
+        UserEntity user = new UserEntity(putEmployeeDto.userEntity().getUsername(),
+         passwordEncoder.encode(putEmployeeDto.userEntity().getPassword()));
         employee.setUserEntity(user);
         return employee;
     }

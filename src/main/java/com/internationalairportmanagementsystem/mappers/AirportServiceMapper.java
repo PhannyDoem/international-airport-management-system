@@ -22,8 +22,7 @@ public class AirportServiceMapper {
                 putAirportServiceDto.location(),
                 putAirportServiceDto.operatingHours()
         );
-        airportService.setServiceId(putAirportServiceDto.serviceId());
-
+        airportService.setServiceId(0L);
         return airportService;
     }
 

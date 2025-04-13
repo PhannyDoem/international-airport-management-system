@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FlightService {
     Flight create(PostFlightDto   postFlightDto);
-    Flight update(PutFlightDto putFlightDto);
+    Flight update(Long flightId, PutFlightDto putFlightDto);
     Flight  findById(Long flightId);
 
     List<Flight> findAll();

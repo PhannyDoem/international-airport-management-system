@@ -29,7 +29,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public Airport update(PutAirportDto putAirportDto) {
+    public Airport update(Long airportId, PutAirportDto putAirportDto) {
         Airport airport = airportMapper.putToAirport(putAirportDto);
         return airportRepository.save(airport);
     }

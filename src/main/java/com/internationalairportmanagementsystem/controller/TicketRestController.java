@@ -128,7 +128,7 @@ public class TicketRestController {
     )
     @PutMapping("/tickets")
     public Ticket updateTicket(@RequestBody PutTicketDto putTicketDto){
-        return ticketService.update(putTicketDto);
+        return ticketService.update(, putTicketDto);
     }
 
     @Operation(
