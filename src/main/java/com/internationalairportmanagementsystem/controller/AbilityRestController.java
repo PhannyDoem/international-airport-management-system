@@ -3,6 +3,7 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostAbilityDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutAbilityDto;
 import com.internationalairportmanagementsystem.enetity.Ability;
+import com.internationalairportmanagementsystem.service.implementations.AbilityServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.AbilityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,14 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/private")
 public class AbilityRestController {
-    private AbilityService abilityService;
+    private final AbilityServiceImpl abilityServiceImpl;
     @Autowired
-    public AbilityRestController(AbilityService abilityService) {
-        this.abilityService = abilityService;
+    public AbilityRestController(AbilityServiceImpl abilityServiceImpl) {
+        this.abilityServiceImpl = abilityServiceImpl;
     }
     @Operation(
             description = "Get endpoint to retrieve all abilities that a user can have. This includes abilities such as specific permissions or skills that can be assigned to users.",
@@ -36,8 +38,8 @@ public class AbilityRestController {
             }
     )
     @GetMapping("/abilities")
-    public List<Ability> findAll(){
-        return abilityService.findAll();
+    public ResponseEntity<List<Ability>> findAll(){
+        return new ResponseEntity<>(abilityServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -59,8 +61,8 @@ public class AbilityRestController {
             }
     )
     @GetMapping("/abilities/{abilityId}")
-    public Ability findById(@PathVariable Long abilityId){
-        return abilityService.findById(abilityId);
+    public ResponseEntity<Optional<Ability>> findById(@PathVariable Long abilityId){
+        return new ResponseEntity<>(abilityServiceImpl.findById(abilityId), HttpStatus.OK);
     }
     @Operation(
             description = "Post endpoint to add a new ability. This allows for the creation of new abilities that can be assigned to users.",
@@ -79,7 +81,7 @@ public class AbilityRestController {
 
     @PostMapping("/abilities")
     public ResponseEntity<Ability> create(@RequestBody PostAbilityDto postAbilityDto){
-        return new ResponseEntity<>(abilityService.create(postAbilityDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(abilityServiceImpl.create(postAbilityDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -102,7 +104,7 @@ public class AbilityRestController {
     )
     @PutMapping("/abilities/{abilityId}")
     public ResponseEntity<Ability> update(@PathVariable Long abilityId,@RequestBody PutAbilityDto putAbilityDto){
-        return new ResponseEntity<>(abilityService.update(abilityId, putAbilityDto), HttpStatus.OK);
+        return new ResponseEntity<>(abilityServiceImpl.update(abilityId, putAbilityDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -125,8 +127,7 @@ public class AbilityRestController {
     )
     @DeleteMapping("/abilities/{abilityId}")
     public ResponseEntity<String> deleteById(@PathVariable Long abilityId){
-        abilityService.deleteById(abilityId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(abilityServiceImpl.deleteById(abilityId), HttpStatus.OK);
     }
 
     @Operation(
@@ -145,6 +146,6 @@ public class AbilityRestController {
     )
     @DeleteMapping("/abilities")
     public String deleteAll(){
-        return abilityService.deleteAll();
+        return abilityServiceImpl.deleteAll();
     }
 }

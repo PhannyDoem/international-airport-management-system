@@ -24,11 +24,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserRestController {
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    private JWTGenerator jwtGenerator;
+    private final JWTGenerator jwtGenerator;
 
-    private UserEntityService userEntityService;
+    private final UserEntityService userEntityService;
 
     @Autowired
     public UserRestController(AuthenticationManager authenticationManager,
@@ -165,15 +165,15 @@ public class UserRestController {
         return user;
     }
 
-    @PutMapping("/private/users")
-    public ResponseEntity<String> updateUser(@RequestBody PutUserDto putUserDto) {
-        UserEntity user = userEntityService.findById(putUserDto.userId());
+    @PutMapping("/private/users/{userId}")
+    public ResponseEntity<String> updateUser(@PathVariable Long userId, @RequestBody PutUserDto putUserDto) {
+        UserEntity user = userEntityService.findById(userId);
 
         if (userEntityService.existsByUsername(putUserDto.username()) &&
                 !putUserDto.username().equals(user.getUsername())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
-        userEntityService.update(, putUserDto);
+        userEntityService.update(userId, putUserDto);
         return new ResponseEntity<>("User updated success!", HttpStatus.OK);
     }
 

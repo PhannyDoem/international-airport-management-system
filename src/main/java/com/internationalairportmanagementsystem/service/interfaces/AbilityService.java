@@ -5,6 +5,7 @@ import com.internationalairportmanagementsystem.dtos.puts.PutAbilityDto;
 import com.internationalairportmanagementsystem.enetity.Ability;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AbilityService {
 
@@ -13,7 +14,7 @@ public interface AbilityService {
 
     Ability update(Long abilityId, PutAbilityDto putAbilityDto);
 
-    Ability findById(Long abilityId);
+    Optional<Ability> findById(Long abilityId);
 
     List<Ability> findAll();
 

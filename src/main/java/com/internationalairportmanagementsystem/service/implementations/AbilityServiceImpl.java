@@ -45,15 +45,11 @@ public class AbilityServiceImpl implements AbilityService {
     }
 
     @Override
-    public Ability findById(Long abilityId) {
-        Optional<Ability> result = abilityRepository.findById(abilityId);
-        Ability ability = null;
-        if(result.isPresent()) {
-            ability = result.get();
-        }else {
-            throw new RuntimeException("Ability with ID  " + abilityId + " not found");
+    public Optional<Ability> findById(Long abilityId) {
+        if (abilityId != null) {
+            return abilityRepository.findById(abilityId);
         }
-        return ability;
+        return Optional.empty();
     }
 
     @Override
@@ -63,8 +59,11 @@ public class AbilityServiceImpl implements AbilityService {
 
     @Override
     public String deleteById(Long abilityId) {
-        abilityRepository.deleteById(abilityId);
-        return "ability deleted successfully";
+        if (abilityId != null) {
+            abilityRepository.deleteById(abilityId);
+        }
+        return "Successfully deleted";
+
     }
 
     @Override

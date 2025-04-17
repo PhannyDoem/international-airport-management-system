@@ -5,6 +5,7 @@ import com.internationalairportmanagementsystem.dtos.puts.PutAircraftDto;
 import com.internationalairportmanagementsystem.enetity.Aircraft;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AircraftService {
 
@@ -17,7 +18,7 @@ public interface AircraftService {
 
     List<Aircraft> findAll();
 
-    String deleteById(Long aircraftId);
+    Optional<String> deleteById(Long aircraftId);
 
     String deleteAll();
 }

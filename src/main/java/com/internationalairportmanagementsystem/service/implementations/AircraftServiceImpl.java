@@ -3,7 +3,6 @@ package com.internationalairportmanagementsystem.service.implementations;
 import com.internationalairportmanagementsystem.dtos.posts.PostAircraftDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutAircraftDto;
 import com.internationalairportmanagementsystem.enetity.Aircraft;
-import com.internationalairportmanagementsystem.enetity.Flight;
 import com.internationalairportmanagementsystem.mappers.AircraftMapper;
 import com.internationalairportmanagementsystem.repository.AircraftRepository;
 import com.internationalairportmanagementsystem.service.interfaces.AircraftService;
@@ -66,7 +65,7 @@ public class AircraftServiceImpl implements AircraftService {
     }
 
     @Override
-    public String deleteById(Long aircraftId) {
+    public Optional<String> deleteById(Long aircraftId) {
         aircraftRepository.deleteById(aircraftId);
         return "Aircraft deleted successfully";
     }
