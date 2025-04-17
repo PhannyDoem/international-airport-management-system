@@ -24,7 +24,7 @@ public class BaggageRestController {
 
     private BaggageService baggageService;
     private UserEntityService userEntityService;
-    praivate PassengerService passengerService;
+    private PassengerService passengerService;
 
     @Autowired
     public BaggageRestController(BaggageService theBaggageService, UserEntityService userEntityService, PassengerService passengerService) {

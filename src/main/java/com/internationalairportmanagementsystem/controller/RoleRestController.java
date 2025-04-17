@@ -4,6 +4,7 @@ import com.internationalairportmanagementsystem.dtos.posts.PostRoleDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutRoleDto;
 import com.internationalairportmanagementsystem.enetity.Role;
 import com.internationalairportmanagementsystem.exceptions.RoleAlreadyExistsException;
+import com.internationalairportmanagementsystem.service.implementations.RoleServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,11 +18,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/private")
 public class RoleRestController {
-    private RoleService roleService;
+
+    private final RoleServiceImpl roleServiceImpl;
 
     @Autowired
-    public RoleRestController(RoleService roleService) {
-        this.roleService = roleService;
+    public RoleRestController( RoleServiceImpl roleServiceImpl) {
+        this.roleServiceImpl = roleServiceImpl;
     }
 
     @Operation(
@@ -40,7 +42,7 @@ public class RoleRestController {
     )
     @GetMapping("/roles")
     public List<Role> findAllRoles() {
-        return roleService.findAll();
+        return roleServiceImpl.findAll();
     }
 
     @Operation(
@@ -62,11 +64,7 @@ public class RoleRestController {
     )
     @GetMapping("/roles/{RoleId}")
     public Role getRoleById(@PathVariable Long RoleId) {
-        Role role = roleService.findById(RoleId);
-        if (role == null) {
-            throw new RuntimeException("Role not found for id - " + RoleId);
-        }
-        return role;
+        return roleServiceImpl.findById(RoleId);
     }
 
     @Operation(
@@ -83,12 +81,8 @@ public class RoleRestController {
             }
     )
     @PostMapping("/roles")
-    public Role addRole(@RequestBody PostRoleDto postRoleDto) {
-        if (roleService.existsByRoleName(postRoleDto.roleName())) {
-            throw new RoleAlreadyExistsException("A role with that name already exists!");
-        }
-
-        return roleService.create(postRoleDto);
+    public ResponseEntity<Role> addRole(@RequestBody PostRoleDto postRoleDto) {
+        return new ResponseEntity<>(roleServiceImpl.create(postRoleDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -104,15 +98,9 @@ public class RoleRestController {
             )
             }
     )
-    @PutMapping("/roles")
-    public Role updateRole(@RequestBody PutRoleDto putRoleDto) {
-        Role role = roleService.findById(putRoleDto.roleId());
-
-        if (roleService.existsByRoleName(putRoleDto.roleName()) &&
-                !putRoleDto.roleName().equals(role.getRoleName())) {
-            throw new RoleAlreadyExistsException("A role with that name already exists!");
-        }
-        return roleService.update(, putRoleDto);
+    @PutMapping("/roles/{roleId}")
+    public ResponseEntity<Role> updateRole(@PathVariable Role roleId, @RequestBody PutRoleDto putRoleDto) {
+        return new ResponseEntity<>(roleServiceImpl.update(roleId.getRoleId(), putRoleDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -132,14 +120,9 @@ public class RoleRestController {
                     )
             }
     )
-    @DeleteMapping("/roles/{RoleId}")
-    public ResponseEntity<String> deleteRoleById(@PathVariable Long RoleId) {
-        Role role = roleService.findById(RoleId);
-        if (role == null) {
-            throw new RuntimeException("Role not found for id - " + RoleId);
-        }
-        roleService.deleteById(RoleId);
-        return new ResponseEntity<>("Role by Id - " + RoleId + " deleted!", HttpStatus.OK);
+    @DeleteMapping("/roles/{roleId}")
+    public ResponseEntity<String> deleteRoleById(@PathVariable Long roleId) {
+        return new ResponseEntity<>(roleServiceImpl.deleteById(roleId),  HttpStatus.OK);
     }
 
 
@@ -158,6 +141,6 @@ public class RoleRestController {
     )
     @DeleteMapping("/roles")
     public String deleteAllRoles() {
-        return roleService.deleteAll();
+        return roleServiceImpl.deleteAll();
     }
 }

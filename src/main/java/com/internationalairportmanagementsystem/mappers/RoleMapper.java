@@ -2,9 +2,10 @@ package com.internationalairportmanagementsystem.mappers;
 
 import com.internationalairportmanagementsystem.dtos.posts.PostRoleDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutRoleDto;
-import com.internationalairportmanagementsystem.enetity.Ability;
 import com.internationalairportmanagementsystem.enetity.Role;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RoleMapper {
     public Role postRole(PostRoleDto  postRoleDto) {
         Role role = new Role(postRoleDto.roleName());

@@ -10,15 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class RoleServiceImpl implements RoleService {
-    private RoleRepository roleRepository;
-    private RoleMapper  roleMapper;
+    private final RoleRepository roleRepository;
+    private final RoleMapper  roleMapper;
 
     @Autowired
-    public RoleServiceImpl(RoleRepository roleRepository) {
+    public RoleServiceImpl(RoleRepository roleRepository, RoleMapper roleMapper) {
         this.roleRepository = roleRepository;
+        this.roleMapper = roleMapper;
     }
 
     @Override
@@ -29,8 +31,16 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role update(Long roleId, PutRoleDto putRoleDto) {
-        Role role = roleMapper.putToRole(putRoleDto);
-        return roleRepository.save(role);
+        if (roleId != null){
+            roleRepository.findById(roleId).stream().findFirst().map(
+                    updatedRole -> {
+                        updatedRole.setRoleName(putRoleDto.roleName());
+                        Role role =  roleRepository.save(updatedRole);
+                        return roleRepository.save(role);
+                    }
+            );
+        }
+        return roleRepository.findById(Objects.requireNonNull(roleId)).orElse(null);
     }
 
     @Override
