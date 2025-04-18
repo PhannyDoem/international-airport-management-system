@@ -6,12 +6,14 @@ import com.internationalairportmanagementsystem.enetity.Baggage;
 import com.internationalairportmanagementsystem.enetity.Passenger;
 import com.internationalairportmanagementsystem.enetity.UserEntity;
 import com.internationalairportmanagementsystem.exceptions.AuthorizationException;
-import com.internationalairportmanagementsystem.service.interfaces.BaggageService;
-import com.internationalairportmanagementsystem.service.interfaces.PassengerService;
-import com.internationalairportmanagementsystem.service.interfaces.UserEntityService;
+import com.internationalairportmanagementsystem.service.implementations.BaggageServiceImpl;
+import com.internationalairportmanagementsystem.service.implementations.PassengerServiceImpl;
+import com.internationalairportmanagementsystem.service.implementations.UserEntityServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -22,15 +24,18 @@ import java.util.List;
 @RequestMapping("/api/private")
 public class BaggageRestController {
 
-    private BaggageService baggageService;
-    private UserEntityService userEntityService;
-    private PassengerService passengerService;
+    private final BaggageServiceImpl baggageServiceImpl;
+    private final UserEntityServiceImpl userEntityServiceImpl;
+    private final PassengerServiceImpl passengerServiceImpl;
 
     @Autowired
-    public BaggageRestController(BaggageService theBaggageService, UserEntityService userEntityService, PassengerService passengerService) {
-        baggageService = theBaggageService;
-        this.userEntityService = userEntityService;
-        this.passengerService = passengerService;
+    public BaggageRestController(BaggageServiceImpl baggageServiceImpl,
+                                 UserEntityServiceImpl userEntityServiceImpl,
+                                 PassengerServiceImpl passengerServiceImpl
+                                 ) {
+        this.baggageServiceImpl = baggageServiceImpl;
+        this.userEntityServiceImpl = userEntityServiceImpl;
+        this.passengerServiceImpl = passengerServiceImpl;
     }
 
 
@@ -48,16 +53,9 @@ public class BaggageRestController {
                     )
             }
     )
-    @GetMapping("/baggage")
-    public List<Baggage> findAll() {
-        UserEntity user = getAuthenticatedUser();
-
-        if (isPassenger(user)) {
-            Passenger passenger = user.getPassenger();
-            return baggageService.findByPassengerId(passenger.getPassengerId());
-        }
-
-        return baggageService.findAll();
+    @GetMapping("/baggages")
+    public ResponseEntity<List<Baggage>> findAll() {
+        return new ResponseEntity<>(baggageServiceImpl.findAll(), HttpStatus.OK);
     }
 
 
@@ -79,17 +77,9 @@ public class BaggageRestController {
                     )
             }
     )
-    @GetMapping("/baggage/{baggageId}")
-    public Baggage getBaggage(@PathVariable Long baggageId) {
-
-        Baggage theBaggage = baggageService.findById(baggageId);
-        if (theBaggage == null) {
-            throw new RuntimeException("Baggage id not found - " + baggageId);
-        }
-        UserEntity user = getAuthenticatedUser();
-        authorizeAccess(user, theBaggage);
-
-        return theBaggage;
+    @GetMapping("/baggages/{baggageId}")
+    public ResponseEntity<Baggage> getBaggage(@PathVariable Long baggageId) {
+        return new ResponseEntity<>(baggageServiceImpl.findById(baggageId), HttpStatus.OK);
     }
 
 
@@ -107,9 +97,9 @@ public class BaggageRestController {
                     )
             }
     )
-    @PostMapping("/baggage")
-    public Baggage addBaggage(@RequestBody PostBaggageDto postBaggageDto) {
-        return baggageService.create(postBaggageDto);
+    @PostMapping("/baggages")
+    public ResponseEntity<Baggage> addBaggage(@RequestBody PostBaggageDto postBaggageDto) {
+        return new ResponseEntity<>(baggageServiceImpl.create(postBaggageDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -130,16 +120,9 @@ public class BaggageRestController {
                     )
             }
     )
-    @PutMapping("/baggage{baggageId}")
-    public Baggage updateBaggage(@PathVariable Long baggageId, @RequestBody PutBaggageDto putBaggageDto) {
-        Baggage theBaggage = baggageService.findById(baggageId);
-        if (theBaggage == null) {
-            throw new RuntimeException("Baggage id not found - " +baggageId );
-        }
-        UserEntity user = getAuthenticatedUser();
-        authorizeAccess(user, theBaggage);
-        Baggage dbBaggage = baggageService.update(baggageId, putBaggageDto);
-        return dbBaggage;
+    @PutMapping("/baggages/{baggageId}")
+    public ResponseEntity<Baggage> updateBaggage(@PathVariable Long baggageId, @RequestBody PutBaggageDto putBaggageDto) {
+        return new ResponseEntity<>(baggageServiceImpl.update(baggageId, putBaggageDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -160,36 +143,8 @@ public class BaggageRestController {
                     )
             }
     )
-    @DeleteMapping("/baggage/{baggageId}")
-    public String deleteBaggage(@PathVariable Long baggageId) {
-        Baggage theBaggage = baggageService.findById(baggageId);
-        if (theBaggage == null) {
-            throw new RuntimeException("Baggage id not found - " + baggageId);
-        }
-        UserEntity user = getAuthenticatedUser();
-        authorizeAccess(user, theBaggage);
-        baggageService.deleteById(baggageId);
-        return "Deleted Baggage id - " + baggageId;
+    @DeleteMapping("/baggages/{baggageId}")
+    public ResponseEntity<String> deleteBaggage(@PathVariable Long baggageId) {
+        return new ResponseEntity<>(baggageServiceImpl.deleteById(baggageId), HttpStatus.OK);
     }
-
-    private UserEntity getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        return userEntityService.findByUsername(username);
-    }
-
-    private boolean isPassenger(UserEntity user) {
-        return user.getRole().getRoleName().equals("PASSENGER");
-    }
-
-
-    private void authorizeAccess(UserEntity user, Baggage baggage) {
-        if (isPassenger(user)) {
-            Passenger passenger = user.getPassenger();
-            if (passenger.getPassengerId() != baggage.getPassenger().getPassengerId()) {
-                throw new AuthorizationException("You don't have access to this resource");
-            }
-        }
-    }
-
 }

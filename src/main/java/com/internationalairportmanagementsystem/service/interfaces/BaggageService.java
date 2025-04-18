@@ -18,7 +18,6 @@ public interface BaggageService {
 
     String deleteById(Long baggageId);
 
-    Optional<Baggage> findByPassengerId(Long passengerId);
 
     String deleteAll();
 }
