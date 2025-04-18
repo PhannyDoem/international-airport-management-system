@@ -3,7 +3,7 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostAircraftDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutAircraftDto;
 import com.internationalairportmanagementsystem.enetity.Aircraft;
-import com.internationalairportmanagementsystem.service.interfaces.AircraftService;
+import com.internationalairportmanagementsystem.service.implementations.AircraftServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/private")
 public class AircraftRestController {
-    private final AircraftService aircraftService;
+    private final AircraftServiceImpl aircraftServiceImpl;
 
     @Autowired
-    public AircraftRestController(AircraftService aircraftService) {
-        this.aircraftService = aircraftService;
+    public AircraftRestController(AircraftServiceImpl aircraftServiceImpl) {
+        this.aircraftServiceImpl = aircraftServiceImpl;
     }
 
     @Operation(
@@ -39,7 +39,7 @@ public class AircraftRestController {
     )
     @PostMapping("/aircraft")
     public ResponseEntity<Aircraft> create(@RequestBody PostAircraftDto postAircraftDto) {
-        return new ResponseEntity<>(aircraftService.create(postAircraftDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(aircraftServiceImpl.create(postAircraftDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -60,9 +60,9 @@ public class AircraftRestController {
                     )
             }
     )
-    @PutMapping("/aircraft")
-    public ResponseEntity<Aircraft> update(@RequestBody PutAircraftDto putAircraftDto) {
-        return new ResponseEntity<>(aircraftService.update(, putAircraftDto), HttpStatus.OK);
+    @PutMapping("/aircraft/{aircraftId}")
+    public ResponseEntity<Aircraft> update(@PathVariable Long aircraftId ,@RequestBody PutAircraftDto putAircraftDto) {
+        return new ResponseEntity<>(aircraftServiceImpl.update(aircraftId, putAircraftDto), HttpStatus.OK);
     }
     @Operation(
             description = "Get endpoint to retrieve all aircraft. This endpoint returns a list of all aircraft registered in the system.",
@@ -79,9 +79,9 @@ public class AircraftRestController {
             }
     )
 
-    @GetMapping("/aircraft-all")
+    @GetMapping("/aircrafts")
     public ResponseEntity<List<Aircraft>> getAllAircrafts() {
-        return new ResponseEntity<>(aircraftService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(aircraftServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -104,11 +104,11 @@ public class AircraftRestController {
     )
     @DeleteMapping("/aircraft/{aircraftId}")
     public ResponseEntity<String> deleteAircraftById(@PathVariable Long aircraftId) {
-        Aircraft aircraft = aircraftService.findById(aircraftId);
+        Aircraft aircraft = aircraftServiceImpl.findById(aircraftId);
         if (aircraft == null) {
             throw new RuntimeException("Delete aircraft field");
         }
-        return  new ResponseEntity<>(aircraftService.deleteById(aircraftId), HttpStatus.OK);
+        return  new ResponseEntity<>(aircraftServiceImpl.deleteById(aircraftId), HttpStatus.OK);
     }
     @Operation(
             description = "Post endpoint to add a new aircraft. This allows for the creation of a new aircraft in the system.",
@@ -126,7 +126,7 @@ public class AircraftRestController {
     )
     @DeleteMapping("aircraft/delete-all")
     public String deleteAll(){
-        aircraftService.deleteAll();
+        aircraftServiceImpl.deleteAll();
         return "Deleted all aircrafts";
     }
 }

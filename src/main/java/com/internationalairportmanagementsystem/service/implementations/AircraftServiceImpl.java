@@ -65,7 +65,7 @@ public class AircraftServiceImpl implements AircraftService {
     }
 
     @Override
-    public Optional<String> deleteById(Long aircraftId) {
+    public String deleteById(Long aircraftId) {
         aircraftRepository.deleteById(aircraftId);
         return "Aircraft deleted successfully";
     }
