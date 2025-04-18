@@ -3,9 +3,6 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostBaggageDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutBaggageDto;
 import com.internationalairportmanagementsystem.enetity.Baggage;
-import com.internationalairportmanagementsystem.enetity.Passenger;
-import com.internationalairportmanagementsystem.enetity.UserEntity;
-import com.internationalairportmanagementsystem.exceptions.AuthorizationException;
 import com.internationalairportmanagementsystem.service.implementations.BaggageServiceImpl;
 import com.internationalairportmanagementsystem.service.implementations.PassengerServiceImpl;
 import com.internationalairportmanagementsystem.service.implementations.UserEntityServiceImpl;
@@ -25,17 +22,11 @@ import java.util.List;
 public class BaggageRestController {
 
     private final BaggageServiceImpl baggageServiceImpl;
-    private final UserEntityServiceImpl userEntityServiceImpl;
-    private final PassengerServiceImpl passengerServiceImpl;
 
     @Autowired
-    public BaggageRestController(BaggageServiceImpl baggageServiceImpl,
-                                 UserEntityServiceImpl userEntityServiceImpl,
-                                 PassengerServiceImpl passengerServiceImpl
+    public BaggageRestController(BaggageServiceImpl baggageServiceImpl
                                  ) {
         this.baggageServiceImpl = baggageServiceImpl;
-        this.userEntityServiceImpl = userEntityServiceImpl;
-        this.passengerServiceImpl = passengerServiceImpl;
     }
 
 
