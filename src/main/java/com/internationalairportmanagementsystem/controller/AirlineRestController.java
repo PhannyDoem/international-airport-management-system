@@ -3,10 +3,12 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostAirlineDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutAirlineDto;
 import com.internationalairportmanagementsystem.enetity.Airline;
-import com.internationalairportmanagementsystem.service.interfaces.AirlineService;
+import com.internationalairportmanagementsystem.service.implementations.AirlineServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +17,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class AirlineRestController {
 
-    private AirlineService airlineService;
+    private final AirlineServiceImpl airlineServiceImpl;
 
     @Autowired
-    public AirlineRestController(AirlineService airlineService) {
-        this.airlineService = airlineService;
+    public AirlineRestController(AirlineServiceImpl airlineServiceImpl) {
+        this.airlineServiceImpl = airlineServiceImpl;
     }
 
     @Operation(
@@ -37,8 +39,8 @@ public class AirlineRestController {
             }
     )
     @GetMapping("/public/airlines")
-    public List<Airline> findAll() {
-        return airlineService.findAll();
+    public ResponseEntity<List<Airline>> findAll() {
+        return new ResponseEntity<>(airlineServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -59,9 +61,9 @@ public class AirlineRestController {
                     )
             }
     )
-    @GetMapping("/public/airlines/{id}")
-    public Airline getAirlineById(@PathVariable Long id) {
-        return airlineService.findById(id);
+    @GetMapping("/public/airlines/{airlineId}")
+    public ResponseEntity<Airline> getAirlineById(@PathVariable Long airlineId) {
+        return new ResponseEntity<>(airlineServiceImpl.findById(airlineId), HttpStatus.OK);
     }
 
     @Operation(
@@ -79,8 +81,8 @@ public class AirlineRestController {
             }
     )
     @PostMapping("/private/airlines")
-    public Airline addAirline(@RequestBody PostAirlineDto postAirlineDto) {
-        return airlineService.create(postAirlineDto);
+    public ResponseEntity<Airline> addAirline(@RequestBody PostAirlineDto postAirlineDto) {
+        return new ResponseEntity<>(airlineServiceImpl.create(postAirlineDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -102,8 +104,8 @@ public class AirlineRestController {
             }
     )
     @PutMapping("/private/airlines")
-    public Airline updateAirline(@RequestBody PutAirlineDto putAirlineDto) {
-        return airlineService.update(, putAirlineDto);
+    public ResponseEntity<Airline> updateAirline(@PathVariable long airlineId, @RequestBody PutAirlineDto putAirlineDto) {
+        return new ResponseEntity<>(airlineServiceImpl.update(airlineId, putAirlineDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -120,10 +122,9 @@ public class AirlineRestController {
                     )
             }
     )
-    @DeleteMapping("/private/airlines/{id}")
-    public String deleteAirlineById(@PathVariable Long id) {
-        airlineService.deleteById(id);
-        return "Deleted airline with id - " + id;
+    @DeleteMapping("/private/airlines/{airlineId}")
+    public ResponseEntity<String> deleteAirlineById(@PathVariable Long airlineId) {
+        return new ResponseEntity<>(airlineServiceImpl.deleteById(airlineId), HttpStatus.OK);
     }
 
     @Operation(
@@ -141,7 +142,7 @@ public class AirlineRestController {
             }
     )
     @DeleteMapping("/private/airlines")
-    public String deleteAllAirlines() {
-        return airlineService.deleteAll();
+    public ResponseEntity<String> deleteAllAirlines() {
+        return new ResponseEntity<>(airlineServiceImpl.deleteAll(), HttpStatus.OK);
     }
 }

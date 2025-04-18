@@ -2,6 +2,7 @@ package com.internationalairportmanagementsystem.service.implementations;
 
 import com.internationalairportmanagementsystem.dtos.posts.PostAirlineDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutAirlineDto;
+import com.internationalairportmanagementsystem.enetity.Aircraft;
 import com.internationalairportmanagementsystem.enetity.Airline;
 import com.internationalairportmanagementsystem.mappers.AirlineMapper;
 import com.internationalairportmanagementsystem.repository.AirlineRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AirlineServiceImpl implements AirlineService {
@@ -30,7 +32,18 @@ public class AirlineServiceImpl implements AirlineService {
 
     @Override
     public Airline update(Long airlineId, PutAirlineDto putAirlineDto) {
-        return airlineMapper.putToAirline(putAirlineDto);
+        if (airlineId != null) {
+            airlineRepository.findById(airlineId)
+                    .stream()
+                    .findFirst()
+                    .ifPresent(
+                            updatedAircraft -> {
+                        updatedAircraft.setName(putAirlineDto.name());
+                        updatedAircraft.setCode(putAirlineDto.code());
+                    });
+        }
+        return airlineRepository.findById(Objects.requireNonNull(airlineId))
+                .orElseThrow(() -> new RuntimeException("Update airline with ID not found!"));
     }
 
     @Override
