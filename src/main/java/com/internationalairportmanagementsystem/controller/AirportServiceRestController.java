@@ -3,11 +3,14 @@ package com.internationalairportmanagementsystem.controller;
 
 import com.internationalairportmanagementsystem.dtos.posts.PostAirportServiceDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutAirportServiceDto;
+import com.internationalairportmanagementsystem.service.implementations.AirportServiceServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.AirportService;
 import com.internationalairportmanagementsystem.service.interfaces.AirportServiceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +19,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class AirportServiceRestController {
 
-    private AirportServiceService airportServiceService;
+    private final AirportServiceServiceImpl airportServiceServiceImpl;
 
     @Autowired
-    public AirportServiceRestController(AirportServiceService theAirportServiceService){
-        airportServiceService=theAirportServiceService;
+    public AirportServiceRestController(AirportServiceServiceImpl theAirportServiceServiceImpl){
+        airportServiceServiceImpl=theAirportServiceServiceImpl;
     }
 
     @Operation(
@@ -38,8 +41,8 @@ public class AirportServiceRestController {
             }
     )
     @GetMapping("/public/airport_services")
-    public List<AirportService> findAllAirportServices(){
-        return airportServiceService.findAll();
+    public ResponseEntity<List<AirportService>> findAllAirportServices(){
+        return new ResponseEntity<>(airportServiceServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -61,12 +64,8 @@ public class AirportServiceRestController {
             }
     )
     @GetMapping("/public/airport_services/{airportServiceId}")
-    public AirportService getAirportServiceById(@PathVariable Long airportServiceId){
-        AirportService theAirportService=airportServiceService.findById(airportServiceId);
-        if(theAirportService==null){
-            throw new RuntimeException("Id not found - "+airportServiceId);
-        }
-        return theAirportService;
+    public ResponseEntity<AirportService> getAirportServiceById(@PathVariable Long airportServiceId){
+        return new ResponseEntity<>(airportServiceServiceImpl.findById(airportServiceId), HttpStatus.OK);
     }
 
     @Operation(
@@ -84,8 +83,8 @@ public class AirportServiceRestController {
             }
     )
     @PostMapping("/private/airport_services")
-    public AirportService addAirportService(@RequestBody PostAirportServiceDto postAirportServiceDto){
-        return airportServiceService.create(postAirportServiceDto);
+    public ResponseEntity<AirportService> addAirportService(@RequestBody PostAirportServiceDto postAirportServiceDto){
+        return new ResponseEntity<>(airportServiceServiceImpl.create(postAirportServiceDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -106,9 +105,9 @@ public class AirportServiceRestController {
                     )
             }
     )
-    @PutMapping("/private/airport_services")
-    public AirportService updateAirportService(@RequestBody PutAirportServiceDto putAirportServiceDto){
-        return airportServiceService.update(, putAirportServiceDto);
+    @PutMapping("/private/airports/service/{serviceId}")
+    public ResponseEntity<AirportService> updateAirportService(@PathVariable Long serviceId,@RequestBody PutAirportServiceDto putAirportServiceDto){
+        return new ResponseEntity<>(airportServiceServiceImpl.update(serviceId,putAirportServiceDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -129,15 +128,9 @@ public class AirportServiceRestController {
                     )
             }
     )
-    @DeleteMapping("/private/airport_services/{airportServiceId}")
-    public String deleteAirportServiceById(@PathVariable Long airportServiceId){
-        AirportService tempAirportService = airportServiceService.findById(airportServiceId);
-        if(tempAirportService==null){
-            throw new RuntimeException("Id not found - "+airportServiceId);
-
-        }
-        airportServiceService.deleteById(airportServiceId);
-        return "Deleted Airport Service id - "+airportServiceId;
+    @DeleteMapping("/private/airport/services/{airportServiceId}")
+    public ResponseEntity<String> deleteAirportServiceById(@PathVariable Long airportServiceId){
+        return new ResponseEntity<>(airportServiceServiceImpl.deleteById(airportServiceId), HttpStatus.OK);
     }
 
     @Operation(
@@ -155,7 +148,7 @@ public class AirportServiceRestController {
             }
     )
     @DeleteMapping("/private/airport_services")
-    public String deleteAllAirportServices() {
-        return airportServiceService.deleteAll();
+    public ResponseEntity<String> deleteAllAirportServices() {
+       return new ResponseEntity<>(airportServiceServiceImpl.deleteAll(), HttpStatus.OK);
     }
 }
