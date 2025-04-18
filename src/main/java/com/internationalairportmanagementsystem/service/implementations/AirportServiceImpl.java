@@ -2,6 +2,7 @@ package com.internationalairportmanagementsystem.service.implementations;
 
 import com.internationalairportmanagementsystem.dtos.posts.PostAirportDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutAirportDto;
+import com.internationalairportmanagementsystem.enetity.Aircraft;
 import com.internationalairportmanagementsystem.enetity.Airport;
 import com.internationalairportmanagementsystem.mappers.AirportMapper;
 import com.internationalairportmanagementsystem.repository.AirportRepository;
@@ -10,12 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class AirportServiceImpl implements AirportService {
-    private AirportRepository airportRepository;
-    private AirportMapper airportMapper;
+    private final AirportRepository airportRepository;
+    private final AirportMapper airportMapper;
 
     @Autowired
     public AirportServiceImpl(AirportRepository airportRepository, AirportMapper airportMapper) {
@@ -30,20 +32,29 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Airport update(Long airportId, PutAirportDto putAirportDto) {
-        Airport airport = airportMapper.putToAirport(putAirportDto);
-        return airportRepository.save(airport);
+        if (airportId !=null){
+            airportRepository.findById(airportId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                            updatedAirport -> {
+                                updatedAirport.setCode(putAirportDto.code());
+                                updatedAirport.setName(putAirportDto.name());
+                                updatedAirport.setLocationCity(putAirportDto.locationCity());
+                                updatedAirport.setLocationCountry(putAirportDto.locationCountry());
+                                Airport aircraft = airportRepository.save(updatedAirport);
+                                return airportRepository.save(aircraft);
+                            }
+                    );
+        }
+        return airportRepository.findById(Objects.requireNonNull(airportId))
+                .orElseThrow(()-> new RuntimeException("Update Airport with Id not found"));
     }
 
     @Override
     public Airport findById(Long airportId) {
-        Optional<Airport> result = airportRepository.findById(airportId);
-        Airport airport = null;
-        if (result.isPresent()) {
-            airport = result.get();
-        }else {
-            throw new RuntimeException("Airport with Id  " + airportId + " not found");
-        }
-        return airport;
+        return airportRepository.findById(airportId)
+                .orElseThrow(()-> new RuntimeException("Airport with Id not found"));
     }
 
     @Override

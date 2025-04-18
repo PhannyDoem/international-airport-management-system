@@ -3,11 +3,13 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostAirportDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutAirportDto;
 import com.internationalairportmanagementsystem.enetity.Airport;
-import com.internationalairportmanagementsystem.service.interfaces.AirportService;
+import com.internationalairportmanagementsystem.service.implementations.AirportServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +18,11 @@ import java.util.List;
 @RequestMapping("/api")
 @Tag(name="Airport")
 public class AirportRestController {
-    private AirportService airportService;
+    private final AirportServiceImpl airportServiceImpl;
 
     @Autowired
-    public AirportRestController(AirportService airportService) {
-        this.airportService = airportService;
+    public AirportRestController(AirportServiceImpl airportServiceImpl) {
+        this.airportServiceImpl = airportServiceImpl;
     }
 
     @Operation(
@@ -38,8 +40,8 @@ public class AirportRestController {
             }
     )
     @GetMapping("/public/airports")
-    public List<Airport> findAll() {
-        return airportService.findAll();
+    public ResponseEntity<List<Airport>> findAll() {
+        return new ResponseEntity<>(airportServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -61,12 +63,8 @@ public class AirportRestController {
             }
     )
     @GetMapping("/public/airports/{airportId}")
-    public Airport getAirportById(@PathVariable Long airportId) {
-        Airport airport = airportService.findById(airportId);
-        if (airport == null) {
-            throw new RuntimeException("Airport not found for id - " + airportId);
-        }
-        return airport;
+    public ResponseEntity<Airport> getAirportById(@PathVariable Long airportId) {
+        return new ResponseEntity<>(airportServiceImpl.findById(airportId), HttpStatus.OK);
     }
 
 
@@ -89,8 +87,8 @@ public class AirportRestController {
             }
     )
     @PostMapping("/private/airports")
-    public Airport addAirport(@RequestBody PostAirportDto postAirportDto) {
-        return airportService.create(postAirportDto);
+    public ResponseEntity<Airport> addAirport(@RequestBody PostAirportDto postAirportDto) {
+        return new ResponseEntity<>(airportServiceImpl.create(postAirportDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -115,9 +113,9 @@ public class AirportRestController {
                     )
             }
     )
-    @PutMapping("/private/airports")
-    public Airport updateAirport(@RequestBody PutAirportDto puttAirportDto) {
-        return airportService.update(, puttAirportDto);
+    @PutMapping("/private/airports/{airportId}")
+    public ResponseEntity<Airport> updateAirport(@PathVariable Long airportId, @RequestBody PutAirportDto puttAirportDto) {
+        return new ResponseEntity<>(airportServiceImpl.update(airportId, puttAirportDto), HttpStatus.OK);
     }
 
 
@@ -140,13 +138,8 @@ public class AirportRestController {
             }
     )
     @DeleteMapping("/private/airports/{airportId}")
-    public String deleteAirportById(@PathVariable Long airportId) {
-        Airport airport = airportService.findById(airportId);
-        if (airport == null) {
-            throw new RuntimeException("Airport not found for id - " + airportId);
-        }
-        airportService.deleteById(airportId);
-        return "Deleted airport with id - " + airportId;
+    public ResponseEntity<String> deleteAirportById(@PathVariable Long airportId) {
+        return new ResponseEntity<>(airportServiceImpl.deleteById(airportId), HttpStatus.OK);
     }
 
     @Operation(
@@ -164,7 +157,7 @@ public class AirportRestController {
             }
     )
     @DeleteMapping("/private/airports")
-    public String deleteAllAirports() {
-        return airportService.deleteAll();
+    public ResponseEntity<String> deleteAllAirports() {
+        return new ResponseEntity<>(airportServiceImpl.deleteAll(), HttpStatus.OK);
     }
 }
