@@ -12,5 +12,4 @@ public interface RentalServiceService {
     List<RentalService> findAll();
     RentalService findById(Long rentalServiceId);
     String deleteById(Long rentalServiceId);
-    String deleteAll();
 }

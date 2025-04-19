@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GateAssignmentServiceImpl implements GateAssignmentService {
-    private GateAssignmentMapper gateAssignmentMapper;
-    private GateAssignmentRepository gateAssignmentRepository;
+    private final GateAssignmentMapper gateAssignmentMapper;
+    private final GateAssignmentRepository gateAssignmentRepository;
 
     @Autowired
     public GateAssignmentServiceImpl(GateAssignmentMapper gateAssignmentMapper, GateAssignmentRepository gateAssignmentRepository) {
@@ -30,8 +31,22 @@ public class GateAssignmentServiceImpl implements GateAssignmentService {
 
     @Override
     public GateAssignment update(Long assignmentId, PutGateAssignmentDto putGateAssignmentDto) {
-        GateAssignment gateAssignment =  gateAssignmentMapper.putToAssignment(putGateAssignmentDto);
-        return gateAssignmentRepository.save(gateAssignment);
+        if (assignmentId != null){
+            gateAssignmentRepository.findById(assignmentId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                            updated -> {
+                                updated.setGate(putGateAssignmentDto.gate());
+                                updated.setFlight(putGateAssignmentDto.flight());
+                                updated.setAssignedTime(putGateAssignmentDto.assignedTime());
+                                GateAssignment assignment = gateAssignmentRepository.save(updated);
+                                return gateAssignmentRepository.save(assignment);
+                            }
+                    );
+        }
+        return gateAssignmentRepository.findById(Objects.requireNonNull(assignmentId))
+                .orElseThrow(()-> new RuntimeException("Update assignment not found"));
     }
 
     @Override

@@ -3,10 +3,13 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostFlightScheduleDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutFlightScheduleDto;
 import com.internationalairportmanagementsystem.enetity.FlightSchedule;
+import com.internationalairportmanagementsystem.service.implementations.FlightScheduleServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.FlightScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +18,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class FlightScheduleRestController {
 
-    private final FlightScheduleService flightScheduleService;
+    private final FlightScheduleServiceImpl flightScheduleServiceImpl;
 
     @Autowired
-    public FlightScheduleRestController(FlightScheduleService flightScheduleService) {
-        this.flightScheduleService = flightScheduleService;
+    public FlightScheduleRestController(FlightScheduleServiceImpl flightScheduleServiceImpl) {
+        this.flightScheduleServiceImpl = flightScheduleServiceImpl;
     }
 
     @Operation(
@@ -37,8 +40,8 @@ public class FlightScheduleRestController {
             }
     )
     @GetMapping("/public/flight_schedules")
-    public List<FlightSchedule> findAllFlightSchedules() {
-        return flightScheduleService.findAll();
+    public ResponseEntity<List<FlightSchedule>> findAllFlightSchedules() {
+        return new ResponseEntity<>(flightScheduleServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -56,8 +59,8 @@ public class FlightScheduleRestController {
             }
     )
     @GetMapping("/public/flight_schedules/{flightScheduleId}")
-    public FlightSchedule getFlightScheduleById(@PathVariable Long flightScheduleId) {
-        return flightScheduleService.findById(flightScheduleId);
+    public ResponseEntity<FlightSchedule> getFlightScheduleById(@PathVariable Long flightScheduleId) {
+        return new ResponseEntity<>(flightScheduleServiceImpl.findById(flightScheduleId), HttpStatus.OK);
     }
 
     @Operation(
@@ -75,8 +78,8 @@ public class FlightScheduleRestController {
             }
     )
     @PostMapping("/private/flight_schedules")
-    public FlightSchedule addFlightSchedule(@RequestBody PostFlightScheduleDto postFlightScheduleDto) {
-        return flightScheduleService.create(postFlightScheduleDto);
+    public ResponseEntity<FlightSchedule> addFlightSchedule(@RequestBody PostFlightScheduleDto postFlightScheduleDto) {
+        return new ResponseEntity<>(flightScheduleServiceImpl.create(postFlightScheduleDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -93,9 +96,9 @@ public class FlightScheduleRestController {
                     )
             }
     )
-    @PutMapping("/private/flight_schedules")
-    public FlightSchedule updateFlightSchedule(@RequestBody PutFlightScheduleDto putFlightScheduleDto) {
-        return flightScheduleService.update(, putFlightScheduleDto);
+    @PutMapping("/private/flight_schedules/{scheduleId}")
+    public ResponseEntity<FlightSchedule> updateFlightSchedule(@PathVariable Long scheduleId,@RequestBody PutFlightScheduleDto putFlightScheduleDto) {
+        return new ResponseEntity<>(flightScheduleServiceImpl.update(scheduleId, putFlightScheduleDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -117,9 +120,8 @@ public class FlightScheduleRestController {
             }
     )
     @DeleteMapping("/private/flight_schedules/{flightScheduleId}")
-    public String deleteFlightScheduleById(@PathVariable Long flightScheduleId) {
-        flightScheduleService.deleteById(flightScheduleId);
-        return "Deleted flight schedule id - " + flightScheduleId;
+    public  ResponseEntity<String> deleteFlightScheduleById(@PathVariable Long flightScheduleId) {
+        return new ResponseEntity<>(flightScheduleServiceImpl.deleteById(flightScheduleId), HttpStatus.OK);
     }
 
     @Operation(
@@ -137,7 +139,7 @@ public class FlightScheduleRestController {
             }
     )
     @DeleteMapping("/private/flight_schedules")
-    public String deleteAllFlightSchedules() {
-        return flightScheduleService.deleteAll();
+    public ResponseEntity<String> deleteAllFlightSchedules() {
+        return new ResponseEntity<>(flightScheduleServiceImpl.deleteAll(), HttpStatus.OK);
     }
 }

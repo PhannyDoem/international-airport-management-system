@@ -6,31 +6,34 @@ import com.internationalairportmanagementsystem.enetity.CheckIn;
 import com.internationalairportmanagementsystem.enetity.Passenger;
 import com.internationalairportmanagementsystem.enetity.UserEntity;
 import com.internationalairportmanagementsystem.exceptions.AuthorizationException;
-import com.internationalairportmanagementsystem.service.interfaces.CheckInService;
+import com.internationalairportmanagementsystem.service.implementations.CheckInServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.UserEntityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/private")
 public class CheckInRestController {
 
-    private CheckInService checkInService;
+    private final CheckInServiceImpl checkInServiceImpl;
 
-    private UserEntityService userEntityService;
+    private final UserEntityService userEntityService;
 
     @Autowired
-    public CheckInRestController(CheckInService theCheckInService, UserEntityService userEntityService){
-
-        checkInService = theCheckInService;
+    public CheckInRestController(CheckInServiceImpl checkInServiceImpl, UserEntityService userEntityService) {
+        this.checkInServiceImpl = checkInServiceImpl;
         this.userEntityService = userEntityService;
     }
+
 
     @Operation(
             description = "Get endpoint to retrieve all check-ins",
@@ -47,16 +50,8 @@ public class CheckInRestController {
             }
     )
     @GetMapping("/check_ins")
-    public List<CheckIn> findAllCheckIns(){
-
-        UserEntity user = getAuthenticatedUser();
-
-        if (isPassenger(user)) {
-            Passenger passenger = user.getPassenger();
-            return checkInService.findByPassengerId(passenger.getPassengerId());
-        }
-
-        return checkInService.findAll();
+    public ResponseEntity<List<CheckIn>> findAllCheckIns(){
+        return new ResponseEntity<>(checkInServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -79,7 +74,7 @@ public class CheckInRestController {
     )
     @GetMapping("/check_ins/{checkInId}")
     public CheckIn getCheckInById(@PathVariable Long checkInId){
-        CheckIn theCheckIn = checkInService.findById(checkInId);
+        CheckIn theCheckIn = checkInServiceImpl.findById(checkInId);
         if(theCheckIn == null){
             throw new RuntimeException("Check In Id not found - " + checkInId);
         }
@@ -103,8 +98,8 @@ public class CheckInRestController {
             }
     )
     @PostMapping("/check_ins")
-    public CheckIn addCheckIn(@RequestBody PostCheckInDto postCheckInDto){
-        return checkInService.create(postCheckInDto);
+    public ResponseEntity<CheckIn> addCheckIn(@RequestBody PostCheckInDto postCheckInDto){
+        return new ResponseEntity<>(checkInServiceImpl.create(postCheckInDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -125,9 +120,9 @@ public class CheckInRestController {
                     )
             }
     )
-    @PutMapping("/check_ins")
-    public CheckIn updateCheckIn(@RequestBody PutCheckInDto putCheckInDto){
-        return checkInService.update(, putCheckInDto);
+    @PutMapping("/check_ins/{checkIndId}")
+    public ResponseEntity<CheckIn> updateCheckIn(@PathVariable Long checkIndId, @RequestBody PutCheckInDto putCheckInDto){
+        return new ResponseEntity<>(checkInServiceImpl.update(checkIndId, putCheckInDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -149,13 +144,8 @@ public class CheckInRestController {
             }
     )
     @DeleteMapping("/check_ins/{checkInId}")
-    public String deleteCheckInById(@PathVariable Long checkInId){
-        CheckIn tempCheckIn = checkInService.findById(checkInId);
-        if(tempCheckIn == null){
-            throw new RuntimeException("Id not found - " + checkInId);
-        }
-        checkInService.deleteById(checkInId);
-        return "Deleted Check In id - " + checkInId;
+    public ResponseEntity<String> deleteCheckInById(@PathVariable Long checkInId){
+        return new ResponseEntity<>(checkInServiceImpl.deleteById(checkInId), HttpStatus.OK);
     }
 
     @Operation(
@@ -173,8 +163,8 @@ public class CheckInRestController {
             }
     )
     @DeleteMapping("/check_ins")
-    public String deleteAllCheckIns() {
-        return checkInService.deleteAll();
+    public ResponseEntity<String> deleteAllCheckIns() {
+        return new ResponseEntity<>(checkInServiceImpl.deleteAll(), HttpStatus.OK);
     }
 
     private UserEntity getAuthenticatedUser() {
@@ -191,7 +181,7 @@ public class CheckInRestController {
     private void authorizeAccess(UserEntity user, CheckIn checkIn) {
         if (isPassenger(user)) {
             Passenger passenger = user.getPassenger();
-            if (passenger.getPassengerId() != checkIn.getPassenger().getPassengerId()) {
+            if (!Objects.equals(passenger.getPassengerId(), checkIn.getPassenger().getPassengerId())) {
                 throw new AuthorizationException("You don't have access to this resource");
             }
         }

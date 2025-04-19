@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ParkingServiceImpl implements ParkingService {
-    private ParkingRepository parkingRepository;
-    private ParkingMapper  parkingMapper;
+    private final ParkingRepository parkingRepository;
+    private final ParkingMapper  parkingMapper;
 
     @Autowired
     public ParkingServiceImpl(ParkingRepository parkingRepository, ParkingMapper parkingMapper) {
@@ -31,8 +32,22 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public Parking update(Long parkingId, PutParkingDto putParkingDto) {
-        Parking parking = parkingMapper.putToParking(putParkingDto);
-        return parkingRepository.save(parking);
+        if (parkingId != null){
+            parkingRepository.findById(parkingId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                            updated -> {
+                                updated.setCapacity(putParkingDto.capacity());
+                                updated.setLocation(putParkingDto.location());
+                                updated.setRate(putParkingDto.rate());
+                                Parking parking = parkingRepository.save(updated);
+                                return parkingRepository.save(parking);
+                            }
+                    );
+        }
+        return parkingRepository.findById(Objects.requireNonNull(parkingId))
+                .orElseThrow(()-> new RuntimeException("Updated Parking not found"));
     }
 
     @Override

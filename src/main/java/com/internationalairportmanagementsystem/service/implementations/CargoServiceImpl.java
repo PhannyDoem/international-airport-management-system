@@ -10,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class CargoServiceImpl implements CargoService {
-    private CargoRepository cargoRepository;
-    private CargoMapper cargoMapper;
+    private final CargoRepository cargoRepository;
+    private final CargoMapper cargoMapper;
     @Autowired
     public  CargoServiceImpl(CargoRepository cargoRepository, CargoMapper cargoMapper) {
         this.cargoRepository = cargoRepository;
@@ -29,20 +30,28 @@ public class CargoServiceImpl implements CargoService {
 
     @Override
     public Cargo update(Long cargoId, PutCargoDto putCargoDto) {
-        Cargo cargo = cargoMapper.putToCargo(putCargoDto);
-        return cargoRepository.save(cargo);
+        if (cargoId != null){
+            cargoRepository.findById(cargoId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                            updated -> {
+                                updated.setWeight(putCargoDto.weight());
+                                updated.setFlight(putCargoDto.flight());
+                                updated.setDimension(putCargoDto.dimension());
+                                Cargo cargo = cargoRepository.save(updated);
+                                return cargoRepository.save(cargo);
+                            }
+                    );
+        }
+        return cargoRepository.findById(Objects.requireNonNull(cargoId))
+                .orElseThrow(() -> new RuntimeException("Update Cargo with Id not found"));
     }
 
     @Override
     public Cargo findById(Long cargoId) {
-        Optional<Cargo> result = cargoRepository.findById(cargoId);
-        Cargo cargo = null;
-        if(result.isPresent()) {
-            cargo = result.get();
-        }else {
-            throw new RuntimeException("Not Found Baggage with Id " + cargoId);
-        }
-        return cargo;
+        return cargoRepository.findById(cargoId)
+                .orElseThrow(() -> new RuntimeException("Find Cargo with Id not found"));
     }
 
     @Override

@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class FlightCrewServiceImpl implements FlightCrewService {
 
-    private FlightRepository flightRepository;
-    private FlightService flightService;
+    private final FlightRepository flightRepository;
+    private final FlightService flightService;
 
 
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
     @Autowired
     public FlightCrewServiceImpl(FlightRepository flightRepository, FlightService flightService, EmployeeService employeeService) {
@@ -35,10 +35,10 @@ public class FlightCrewServiceImpl implements FlightCrewService {
     }
 
     @Override
-    public void deleteByFlightIdAndEmployeeId(Long flightId, Long employeeId) {
+    public Flight deleteByFlightIdAndEmployeeId(Long flightId, Long employeeId) {
         Flight flight = flightService.findById(flightId);
         Employee employee = employeeService.findById(employeeId);
         flight.getEmployees().remove(employee);
-        flightRepository.save(flight);
+       return flightRepository.save(flight);
     }
 }

@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class SecurityCheckpointServiceImpl implements SecurityCheckpointService {
-    private SecurityCheckpointRepository securityCheckpointRepository;
-    private SecurityCheckpointMapper securityCheckpointMapper;
+    private final SecurityCheckpointRepository securityCheckpointRepository;
+    private final SecurityCheckpointMapper securityCheckpointMapper;
 
     @Autowired
     public SecurityCheckpointServiceImpl(
@@ -34,9 +35,21 @@ public class SecurityCheckpointServiceImpl implements SecurityCheckpointService 
 
     @Override
     public SecurityCheckPoint update(Long securityId, PutSecurityCheckpointDto putSecurityCheckpointDto) {
-        SecurityCheckPoint securityCheckPoint = securityCheckpointMapper
-                .putToSecurityCheckpoint(putSecurityCheckpointDto);
-        return securityCheckpointRepository.save(securityCheckPoint);
+        if (securityId != null){
+            securityCheckpointRepository.findById(securityId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                            updated -> {
+                                updated.setLocation(putSecurityCheckpointDto.location());
+                                updated.setOperatingHours(putSecurityCheckpointDto.operatingHours());
+                                SecurityCheckPoint securityCheckPoint = securityCheckpointRepository.save(updated);
+                                return securityCheckpointRepository.save(securityCheckPoint);
+                            }
+                    );
+        }
+        return securityCheckpointRepository.findById(Objects.requireNonNull(securityId))
+                .orElseThrow(()-> new RuntimeException("Update not found"));
     }
 
     @Override

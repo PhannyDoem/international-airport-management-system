@@ -1,38 +1,26 @@
 package com.internationalairportmanagementsystem.controller;
-
 import com.internationalairportmanagementsystem.dtos.posts.PostFeedbackDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutFeedbackDto;
 import com.internationalairportmanagementsystem.enetity.Feedback;
-import com.internationalairportmanagementsystem.enetity.Passenger;
-import com.internationalairportmanagementsystem.enetity.UserEntity;
-import com.internationalairportmanagementsystem.exceptions.AuthorizationException;
-import com.internationalairportmanagementsystem.service.interfaces.FeedbackService;
-import com.internationalairportmanagementsystem.service.interfaces.PassengerService;
-import com.internationalairportmanagementsystem.service.interfaces.UserEntityService;
+import com.internationalairportmanagementsystem.service.implementations.FeedbackServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
 public class FeedbackRestController {
-    private FeedbackService feedbackService;
-
-    private UserEntityService userEntityService;
-
-    private PassengerService passengerService;
+    private final FeedbackServiceImpl feedbackServiceImpl;
 
     @Autowired
-    public FeedbackRestController(FeedbackService theFeedbackService, PassengerService thePassengerService, UserEntityService theuserEntityService) {
-        feedbackService = theFeedbackService;
-        passengerService = thePassengerService;
-        userEntityService = theuserEntityService;
+    public FeedbackRestController(FeedbackServiceImpl feedbackServiceImpl) {
+        this.feedbackServiceImpl = feedbackServiceImpl;
     }
     @Operation(
             description = "Endpoint to get all feedbacks",
@@ -49,8 +37,8 @@ public class FeedbackRestController {
             }
     )
     @GetMapping("/public/feedbacks")
-    public List<Feedback> findAll() {
-        return feedbackService.findAll();
+    public ResponseEntity<List<Feedback>> findAll() {
+        return new ResponseEntity<>(feedbackServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -68,12 +56,8 @@ public class FeedbackRestController {
             }
     )
     @GetMapping("/public/feedbacks/{feedbackId}")
-    public Feedback getFeedback(@PathVariable Long feedbackId) {
-        Feedback theFeedback = feedbackService.findById(feedbackId);
-        if (theFeedback == null) {
-            throw new RuntimeException("Feedback id not found - " + feedbackId);
-        }
-        return theFeedback;
+    public ResponseEntity<Feedback> getFeedback(@PathVariable Long feedbackId) {
+        return new ResponseEntity<>(feedbackServiceImpl.findById(feedbackId), HttpStatus.OK);
     }
 
     @Operation(
@@ -91,8 +75,8 @@ public class FeedbackRestController {
             }
     )
     @PostMapping("/private/feedbacks")
-    public Feedback addFeedback(@RequestBody PostFeedbackDto postFeedbackDto) {
-        return feedbackService.create(postFeedbackDto);
+    public ResponseEntity<Feedback> addFeedback(@RequestBody PostFeedbackDto postFeedbackDto) {
+       return new ResponseEntity<>(feedbackServiceImpl.create(postFeedbackDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -113,16 +97,11 @@ public class FeedbackRestController {
                     )
             }
     )
-    @PutMapping("/private/feedbacks")
-    public Feedback updateFeedback(@RequestBody PutFeedbackDto putFeedbackDto) {
-        Feedback tempFeedback = feedbackService.findById(putFeedbackDto.feedbackId());
-        if(tempFeedback == null){
-            throw new RuntimeException("Baggage id not found - " + null);
-        }
+    @PutMapping("/private/feedbacks/{feedbackId}")
+    public ResponseEntity<Feedback> updateFeedback(@PathVariable Long feedbackId,@RequestBody PutFeedbackDto putFeedbackDto) {
+        return new ResponseEntity<>(feedbackServiceImpl.update(feedbackId, putFeedbackDto), HttpStatus.OK);
 
-        UserEntity user = getAuthenticatedUser();
-        authorizeAccess(user, tempFeedback);
-        return feedbackService.update(, putFeedbackDto);
+
     }
     @Operation(
             description = "Endpoint to delete a feedback by ID",
@@ -143,34 +122,8 @@ public class FeedbackRestController {
             }
     )
     @DeleteMapping("/private/feedbacks/{feedbackId}")
-    public String deleteFeedback(@PathVariable Long feedbackId) {
-        Feedback tempFeedback = feedbackService.findById(feedbackId);
-        if (tempFeedback == null) {
-            throw new RuntimeException("Feedback id not found - " + feedbackId);
-        }
-        UserEntity user = getAuthenticatedUser();
-        authorizeAccess(user, tempFeedback);
-        feedbackService.deleteById(feedbackId);
-
-        return "Deleted feedback id - " + feedbackId;
+    public ResponseEntity<String> deleteFeedback(@PathVariable Long feedbackId) {
+        return new ResponseEntity<>(feedbackServiceImpl.deleteById(feedbackId), HttpStatus.OK);
     }
 
-    private UserEntity getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        return userEntityService.findByUsername(username);
-    }
-
-    private boolean isPassenger(UserEntity user) {
-        return user.getRole().getRoleName().equals("PASSENGER");
-    }
-
-    private void authorizeAccess(UserEntity user, Feedback feedback) {
-        if (isPassenger(user)) {
-            Passenger passenger = user.getPassenger();
-            if (!Objects.equals(passenger.getPassengerId(), feedback.getPassenger().getPassengerId())) {
-                throw new AuthorizationException("You don't have access to this resource");
-            }
-        }
-    }
 }

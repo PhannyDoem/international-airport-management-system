@@ -15,7 +15,7 @@ public interface CheckInService {
 
     List<CheckIn>  findAll();
 
-    List<CheckIn>  findByPassengerId(Long passengerId);
+    CheckIn  findByPassengerId(Long passengerId);
 
     String deleteById(Long checkInId);
 

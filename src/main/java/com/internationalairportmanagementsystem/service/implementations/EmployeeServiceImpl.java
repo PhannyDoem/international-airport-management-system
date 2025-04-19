@@ -13,13 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private EmployeeRepository employeeRepository;
-    private EmployeeMapper employeeMapper;
-    private RoleRepository roleRepository;
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
+    private final RoleRepository roleRepository;
     @Autowired
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
                                EmployeeMapper employeeMapper,
@@ -33,17 +34,28 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee create(PostEmployeeDto postEmployeeDto) {
         Employee employee = employeeMapper.postToEmployee(postEmployeeDto);
-        Role employeeRole = roleRepository.findByRoleName("Employee").get();
+        Role employeeRole = roleRepository.findByRoleName("Employee").orElseThrow();
         employee.getUserEntity().setRole(employeeRole);
         return employeeRepository.save(employee);
     }
 
     @Override
     public Employee update(Long employeeId, PutEmployeeDto putEmployeeDto) {
-        Employee employee = employeeMapper.putToEmployee(putEmployeeDto);
-        Role employeeRole = roleRepository.findByRoleName("Employee").get();
-        employee.getUserEntity().setRole(employeeRole);
-        return employeeRepository.save(employee);
+        if (employeeId != null){
+            Optional<Employee> employeeOptional = employeeRepository.findById(employeeId)
+                    .stream().findFirst()
+                    .map(
+                            updated -> {
+                                updated.setRole(putEmployeeDto.role());
+                                updated.setContactInfo(putEmployeeDto.contactInfo());
+                                updated.setName(putEmployeeDto.name());
+                                updated.setUserEntity(putEmployeeDto.userEntity());
+                                return employeeRepository.save(updated);
+                            }
+                    );
+        }
+        return employeeRepository.findById(Objects.requireNonNull(employeeId))
+                .orElseThrow(() -> new RuntimeException("Update Employee with Id"));
     }
 
     @Override

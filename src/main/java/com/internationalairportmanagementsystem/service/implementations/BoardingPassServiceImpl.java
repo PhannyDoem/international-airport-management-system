@@ -10,14 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class BoardingPassServiceImpl implements BoardingPassService {
 
-    private BoardingPassRepository boardingPassRepository;
+    private final BoardingPassRepository boardingPassRepository;
 
-    private BoardingPassMapper boardingPassMapper;
+    private final BoardingPassMapper boardingPassMapper;
 
     @Autowired
     public BoardingPassServiceImpl(BoardingPassRepository theBoardingPassRepository, BoardingPassMapper theBoardingPassMapper){
@@ -32,27 +32,30 @@ public class BoardingPassServiceImpl implements BoardingPassService {
 
     @Override
     public BoardingPass update(Long boardingPassId, PutBoardingPassDto putBoardingPassDto) {
-        BoardingPass boardingPass = boardingPassMapper.putToBoardingPass(putBoardingPassDto);
-        return boardingPassRepository.save(boardingPass);
+        if (boardingPassId != null){
+            boardingPassRepository.findById(boardingPassId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                            updated -> {
+                                updated.setTicket(putBoardingPassDto.ticket());
+                                updated.setBoardingTime(putBoardingPassDto.boardingTime());
+                                updated.setGate(putBoardingPassDto.gate());
+                                BoardingPass boarding = boardingPassRepository.save(updated);
+                                return boardingPassRepository.save(boarding);
+                            }
+                    );
+        }
+        return boardingPassRepository.findById(Objects.requireNonNull(boardingPassId))
+                .orElseThrow(()-> new RuntimeException("Update Boarding Pass with Id not found!"));
     }
 
     @Override
-    public BoardingPass findById(Long theId) {
-        Optional<BoardingPass> result = boardingPassRepository.findById(theId);
-        BoardingPass theBoardingPass = null;
-        if (result.isPresent()) {
-            theBoardingPass = result.get();
-        }
-        else {
-            throw new RuntimeException("Did not find Boarding Pass id - " + theId);
-        }
-        return theBoardingPass;
+    public BoardingPass findById(Long boardingId) {
+        return boardingPassRepository.findById(boardingId)
+                .orElseThrow(()-> new RuntimeException("Find by id not found!"));
     }
 
-    @Override
-    public List<BoardingPass> findByPassengerId(Long passengerId) {
-        return boardingPassRepository.findByPassengerId(passengerId);
-    }
 
     @Override
     public List<BoardingPass> findAll() {
@@ -60,8 +63,8 @@ public class BoardingPassServiceImpl implements BoardingPassService {
     }
 
     @Override
-    public String deleteById(Long theId) {
-        boardingPassRepository.deleteById(theId);
-        return "Deleted";
+    public String deleteById(Long boardingId) {
+        boardingPassRepository.deleteById(boardingId);
+        return "Deleted all Boarding Pass!";
     }
 }

@@ -3,11 +3,12 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostFlightDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutFlightDto;
 import com.internationalairportmanagementsystem.enetity.Flight;
-import com.internationalairportmanagementsystem.exceptions.FlightAlreadyExistsException;
-import com.internationalairportmanagementsystem.service.interfaces.FlightService;
+import com.internationalairportmanagementsystem.service.implementations.FlightServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +17,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class FlightRestController {
 
-    private FlightService flightService;
+    private final FlightServiceImpl flightServiceImpl;
 
     @Autowired
-    public FlightRestController(FlightService flightService) {
-        this.flightService = flightService;
+    public FlightRestController(FlightServiceImpl flightServiceImpl) {
+        this.flightServiceImpl = flightServiceImpl;
     }
 
     @Operation(
@@ -38,8 +39,8 @@ public class FlightRestController {
             }
     )
     @GetMapping("/public/flights")
-    public List<Flight> findAll() {
-        return flightService.findAll();
+    public ResponseEntity<List<Flight>> findAll() {
+        return  new ResponseEntity<>(flightServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -57,12 +58,8 @@ public class FlightRestController {
             }
     )
     @GetMapping("/public/flights/{flightId}")
-    public Flight getFlightById(@PathVariable Long flightId) {
-        Flight flight = flightService.findById(flightId);
-        if (flight == null) {
-            throw new RuntimeException("Flight not found for id - " + flightId);
-        }
-        return flight;
+    public ResponseEntity<Flight> getFlightById(@PathVariable Long flightId) {
+        return new ResponseEntity<>(flightServiceImpl.findById(flightId), HttpStatus.OK);
     }
 
     @Operation(
@@ -80,11 +77,8 @@ public class FlightRestController {
             }
     )
     @PostMapping("/private/flights")
-    public Flight addFlight(@RequestBody PostFlightDto postFlightDto) {
-        if (flightService.existsByFlightNumber(postFlightDto.flightNumber())) {
-            throw new FlightAlreadyExistsException("Flight with that number already exists!");
-        }
-        return flightService.create(postFlightDto);
+    public ResponseEntity<Flight> addFlight(@RequestBody PostFlightDto postFlightDto) {
+        return new ResponseEntity<>(flightServiceImpl.create(postFlightDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -101,9 +95,9 @@ public class FlightRestController {
                     )
             }
     )
-    @PutMapping("/private/flights")
-    public Flight updateFlight(@RequestBody PutFlightDto putFlightDto) {
-        return flightService.update(putFlightDto);
+    @PutMapping("/private/flights/{flightId}")
+    public ResponseEntity<Flight> updateFlight(@PathVariable Long flightId, @RequestBody PutFlightDto putFlightDto) {
+        return new ResponseEntity<>(flightServiceImpl.update(flightId, putFlightDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -125,13 +119,8 @@ public class FlightRestController {
             }
     )
     @DeleteMapping("/private/flights/{flightId}")
-    public String deleteFlightById(@PathVariable Long flightId) {
-        Flight flight = flightService.findById(flightId);
-        if (flight == null) {
-            throw new RuntimeException("Flight not found for id - " + flightId);
-        }
-        flightService.deleteById(flightId);
-        return "Deleted flight with id - " + flightId;
+    public ResponseEntity<String> deleteFlightById(@PathVariable Long flightId) {
+        return new ResponseEntity<>(flightServiceImpl.deleteById(flightId), HttpStatus.OK);
     }
 
     @Operation(
@@ -149,7 +138,7 @@ public class FlightRestController {
             }
     )
     @DeleteMapping("/private/flights")
-    public String deleteAllFlights() {
-        return flightService.deleteAll();
+    public ResponseEntity<String> deleteAllFlights() {
+      return new ResponseEntity<>(flightServiceImpl.deleteAll(), HttpStatus.OK);
     }
 }

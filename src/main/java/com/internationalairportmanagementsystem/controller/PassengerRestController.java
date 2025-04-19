@@ -8,12 +8,9 @@ import com.internationalairportmanagementsystem.dtos.puts.PutPassengerDto;
 import com.internationalairportmanagementsystem.enetity.Passenger;
 import com.internationalairportmanagementsystem.enetity.UserEntity;
 import com.internationalairportmanagementsystem.exceptions.AuthorizationException;
-import com.internationalairportmanagementsystem.mappers.PassengerMapper;
-import com.internationalairportmanagementsystem.repository.PassengerRepository;
-import com.internationalairportmanagementsystem.repository.RoleRepository;
 import com.internationalairportmanagementsystem.repository.UserEntityRepository;
 import com.internationalairportmanagementsystem.security.JWTGenerator;
-import com.internationalairportmanagementsystem.service.interfaces.PassengerService;
+import com.internationalairportmanagementsystem.service.implementations.PassengerServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.UserEntityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,7 +21,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -34,28 +30,21 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api")
 public class PassengerRestController {
-    private PassengerService passengerService;
-    private AuthenticationManager authenticationManager;
-    private UserEntityRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
-    private JWTGenerator jwtGenerator;
-    private PassengerMapper passengerMapper;
-    private PassengerRepository passengerRepository;
-
-    private UserEntityService userEntityService;
+    private final PassengerServiceImpl passengerServiceImpl;
+    private final AuthenticationManager authenticationManager;
+    private final UserEntityRepository userRepository;
+    private final JWTGenerator jwtGenerator;
+    private final UserEntityService userEntityService;
     @Autowired
-    public PassengerRestController(PassengerService thePassengerService, AuthenticationManager authenticationManager, UserEntityRepository userRepository,
-                                   RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTGenerator jwtGenerator,
-                                   PassengerMapper passengerMapper, PassengerRepository passengerRepository, UserEntityService userEntityService) {
+    public PassengerRestController(PassengerServiceImpl passengerServiceImpl,
+                                   AuthenticationManager authenticationManager,
+                                   UserEntityRepository userRepository,
+                                   JWTGenerator jwtGenerator,
+                                   UserEntityService userEntityService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
         this.jwtGenerator=jwtGenerator;
-        this.passengerMapper=passengerMapper;
-        passengerService = thePassengerService;
-        this.passengerRepository = passengerRepository;
+        this.passengerServiceImpl = passengerServiceImpl;
         this.userEntityService = userEntityService;
     }
 
@@ -78,10 +67,10 @@ public class PassengerRestController {
         UserEntity user = getAuthenticatedUser();
 
         if (isPassenger(user)) {
-            Passenger passenger = passengerService.findById(user.getPassenger().getPassengerId());
+            Passenger passenger = passengerServiceImpl.findById(user.getPassenger().getPassengerId());
             return Collections.singletonList(passenger);
         }
-        return passengerService.findAll();
+        return passengerServiceImpl.findAll();
     }
 
     @Operation(
@@ -100,7 +89,7 @@ public class PassengerRestController {
     )
     @GetMapping("/private/passengers/{passengerId}")
     public Passenger getPassenger(@PathVariable Long passengerId) {
-        Passenger thePassenger = passengerService.findById(passengerId);
+        Passenger thePassenger = passengerServiceImpl.findById(passengerId);
         if (thePassenger == null) {
             throw new RuntimeException("Passenger id not found - " + passengerId);
         }
@@ -150,11 +139,11 @@ public class PassengerRestController {
     )
     @PostMapping("/public/auth/passengers/register")
     public ResponseEntity<String> register(@RequestBody PostPassengerDto postPassengerDto) {
-        if (userRepository.existsByUsername(postPassengerDto.username())) {
+        if (userRepository.existsByUsername(postPassengerDto.userEntity().getUsername())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
 
-        passengerService.create(postPassengerDto);
+        passengerServiceImpl.create(postPassengerDto);
 
         return new ResponseEntity<>("Passenger registered successfully!", HttpStatus.OK);
     }
@@ -174,20 +163,20 @@ public class PassengerRestController {
                     )
             }
     )
-    @PutMapping("/private/passengers")
-    public ResponseEntity<String> updatePassenger(@RequestBody PutPassengerDto putPassengerDto) {
+    @PutMapping("/private/passengers/{passengerId}")
+    public ResponseEntity<String> updatePassenger(@PathVariable Long passengerId,@RequestBody PutPassengerDto putPassengerDto) {
 
-        Passenger thePassenger = passengerService.findById(putPassengerDto.passengerId());
+        Passenger thePassenger = passengerServiceImpl.update(passengerId,putPassengerDto);
         UserEntity user = thePassenger.getUserEntity();
 
-        if (userEntityService.existsByUsername(putPassengerDto.username()) &&
-                !putPassengerDto.username().equals(user.getUsername())) {
+        if (userEntityService.existsByUsername(putPassengerDto.userEntity().getUsername()) &&
+                !putPassengerDto.userEntity().getUsername().equals(user.getUsername())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
 
         UserEntity user1 = getAuthenticatedUser();
         authorizeAccess(user1, thePassenger);
-        passengerService.update(, putPassengerDto);
+        passengerServiceImpl.update(passengerId, putPassengerDto);
 
         return new ResponseEntity<>("Passenger updated successfully!", HttpStatus.OK);
     }
@@ -212,13 +201,13 @@ public class PassengerRestController {
     )
     @DeleteMapping("/private/passengers/{passengerId}")
     public String deletePassenger(@PathVariable Long passengerId) {
-        Passenger tempPassenger = passengerService.findById(passengerId);
+        Passenger tempPassenger = passengerServiceImpl.findById(passengerId);
         if (tempPassenger == null) {
             throw new RuntimeException("Passenger id not found - " + passengerId);
         }
         UserEntity user = getAuthenticatedUser();
         authorizeAccess(user, tempPassenger);
-        passengerService.deleteById(passengerId);
+        passengerServiceImpl.deleteById(passengerId);
         return "Deleted passenger id - " + passengerId;
     }
 

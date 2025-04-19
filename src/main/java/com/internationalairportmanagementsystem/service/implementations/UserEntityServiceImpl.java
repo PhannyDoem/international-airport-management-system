@@ -11,12 +11,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserEntityServiceImpl implements UserEntityService {
-    private UserEntityRepository userEntityRepository;
-    private PasswordEncoder passwordEncoder;
-    private UserMapper userMapper;
+    private final UserEntityRepository userEntityRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
     @Autowired
     public UserEntityServiceImpl(UserEntityRepository userEntityRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userEntityRepository = userEntityRepository;
@@ -32,8 +33,21 @@ public class UserEntityServiceImpl implements UserEntityService {
 
     @Override
     public UserEntity update(Long userId, PutUserDto putUserDto) {
-        UserEntity user = userMapper.putToUser(putUserDto);
-        return userEntityRepository.save(user);
+        if (userId != null){
+            userEntityRepository.findById(userId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                            updated -> {
+                                updated.setUsername(putUserDto.username());
+                                updated.setPassword(passwordEncoder.encode(putUserDto.password()));
+                                UserEntity userEntity = userEntityRepository.save(updated);
+                                return userEntityRepository.save(userEntity);
+                            }
+                    );
+        }
+        return userEntityRepository.findById(Objects.requireNonNull(userId))
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override

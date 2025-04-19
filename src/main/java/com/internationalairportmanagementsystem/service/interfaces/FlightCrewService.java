@@ -5,5 +5,5 @@ import com.internationalairportmanagementsystem.enetity.Flight;
 
 public interface FlightCrewService {
     Flight create(PostFlightCrewDto  postFlightCrewDto);
-    void deleteByFlightIdAndEmployeeId(Long flightId, Long employeeId);
+    Flight deleteByFlightIdAndEmployeeId(Long flightId, Long employeeId);
 }

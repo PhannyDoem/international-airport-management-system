@@ -6,7 +6,7 @@ import com.internationalairportmanagementsystem.dtos.posts.PostUserDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutUserDto;
 import com.internationalairportmanagementsystem.enetity.UserEntity;
 import com.internationalairportmanagementsystem.security.JWTGenerator;
-import com.internationalairportmanagementsystem.service.interfaces.UserEntityService;
+import com.internationalairportmanagementsystem.service.implementations.UserEntityServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +25,16 @@ import java.util.List;
 public class UserRestController {
 
     private final AuthenticationManager authenticationManager;
-
     private final JWTGenerator jwtGenerator;
-
-    private final UserEntityService userEntityService;
+    private final UserEntityServiceImpl userEntityServiceImpl;
 
     @Autowired
     public UserRestController(AuthenticationManager authenticationManager,
                               JWTGenerator jwtGenerator,
-                              UserEntityService userEntityService) {
+                              UserEntityServiceImpl userEntityServiceImpl) {
         this.authenticationManager = authenticationManager;
         this.jwtGenerator = jwtGenerator;
-        this.userEntityService = userEntityService;
+        this.userEntityServiceImpl = userEntityServiceImpl;
     }
 
     @Operation(
@@ -84,10 +82,10 @@ public class UserRestController {
     )
     @PostMapping("/public/auth/users/register")
     public ResponseEntity<String> register(@RequestBody PostUserDto postUserDto) {
-        if (userEntityService.existsByUsername(postUserDto.username())) {
+        if (userEntityServiceImpl.existsByUsername(postUserDto.username())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
-        userEntityService.create(postUserDto);
+        userEntityServiceImpl.create(postUserDto);
         return new ResponseEntity<>("User registered success!", HttpStatus.OK);
     }
 
@@ -106,8 +104,8 @@ public class UserRestController {
             }
     )
     @GetMapping("/private/users")
-    public List<UserEntity> findAllUsers() {
-        return userEntityService.findAll();
+    public ResponseEntity<List<UserEntity>> findAllUsers() {
+        return new ResponseEntity<>(userEntityServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -129,12 +127,8 @@ public class UserRestController {
             }
     )
     @GetMapping("/private/users/{userId}")
-    public UserEntity getUserById(@PathVariable Long userId) {
-        UserEntity user = userEntityService.findById(userId);
-        if (user == null) {
-            throw new RuntimeException("User not found for id - " + userId);
-        }
-        return user;
+    public ResponseEntity<UserEntity> getUserById(@PathVariable Long userId) {
+       return new ResponseEntity<>(userEntityServiceImpl.findById(userId), HttpStatus.OK);
     }
 
     @Operation(
@@ -158,7 +152,7 @@ public class UserRestController {
 
     @GetMapping("/private/users/username/{username}")
     public UserEntity getUserByUsername(@PathVariable String username) {
-        UserEntity user = userEntityService.findByUsername(username);
+        UserEntity user = userEntityServiceImpl.findByUsername(username);
         if (user == null) {
             throw new RuntimeException("User not found for username - " + username);
         }
@@ -166,15 +160,8 @@ public class UserRestController {
     }
 
     @PutMapping("/private/users/{userId}")
-    public ResponseEntity<String> updateUser(@PathVariable Long userId, @RequestBody PutUserDto putUserDto) {
-        UserEntity user = userEntityService.findById(userId);
-
-        if (userEntityService.existsByUsername(putUserDto.username()) &&
-                !putUserDto.username().equals(user.getUsername())) {
-            return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
-        }
-        userEntityService.update(userId, putUserDto);
-        return new ResponseEntity<>("User updated success!", HttpStatus.OK);
+    public ResponseEntity<UserEntity> updateUser(@PathVariable Long userId, @RequestBody PutUserDto putUserDto) {
+        return new ResponseEntity<>(userEntityServiceImpl.update(userId,putUserDto), HttpStatus.OK);
     }
 
 
@@ -197,13 +184,8 @@ public class UserRestController {
             }
     )
     @DeleteMapping("/private/users/{userId}")
-    public String deleteUserById(@PathVariable Long userId) {
-        UserEntity user = userEntityService.findById(userId);
-        if (user == null) {
-            throw new RuntimeException("User not found for id - " + userId);
-        }
-        userEntityService.deleteById(userId);
-        return "Deleted user with id - " + userId;
+    public ResponseEntity<String> deleteUserById(@PathVariable Long userId) {
+       return new ResponseEntity<>(userEntityServiceImpl.deleteById(userId), HttpStatus.OK);
     }
 
     @Operation(
@@ -221,7 +203,7 @@ public class UserRestController {
             }
     )
     @DeleteMapping("/private/users")
-    public String deleteAllUsers() {
-        return userEntityService.deleteAll();
+    public ResponseEntity<String> deleteAllUsers() {
+        return new ResponseEntity<>(userEntityServiceImpl.deleteAll(), HttpStatus.OK);
     }
 }

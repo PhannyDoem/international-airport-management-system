@@ -4,10 +4,13 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostCargoDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutCargoDto;
 import com.internationalairportmanagementsystem.enetity.Cargo;
+import com.internationalairportmanagementsystem.service.implementations.CargoServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.CargoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,12 +19,15 @@ import java.util.List;
 @RequestMapping("/api/private")
 public class CargoRestController {
 
-    private CargoService cargoService;
+    private final CargoServiceImpl cargoServiceImpl;
 
     @Autowired
-    public CargoRestController(CargoService theCargoService){
-        cargoService = theCargoService;
+    public CargoRestController(CargoServiceImpl cargoServiceImpl) {
+        this.cargoServiceImpl = cargoServiceImpl;
     }
+
+
+
 
     @Operation(
             description = "Get endpoint to retrieve all cargo records",
@@ -37,9 +43,9 @@ public class CargoRestController {
                     )
             }
     )
-    @GetMapping("/cargo")
-    public List<Cargo> findAll(){
-        return cargoService.findAll();
+    @GetMapping("/cargos")
+    public ResponseEntity<List<Cargo>> findAll(){
+        return new ResponseEntity<>(cargoServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -60,13 +66,9 @@ public class CargoRestController {
                     )
             }
     )
-    @GetMapping("/cargo/{cargoId}")
-    public Cargo getCargo(@PathVariable Long cargoId){
-        Cargo theCargo = cargoService.findById(cargoId);
-        if(theCargo == null){
-            throw new RuntimeException("Cargo id not found - " + cargoId);
-        }
-        return theCargo;
+    @GetMapping("/cargos/{cargoId}")
+    public ResponseEntity<Cargo> getCargo(@PathVariable Long cargoId){
+        return new ResponseEntity<>(cargoServiceImpl.findById(cargoId), HttpStatus.OK);
     }
 
     @Operation(
@@ -83,10 +85,9 @@ public class CargoRestController {
                     )
             }
     )
-    @PostMapping("/cargo")
-    public Cargo addCargo(@RequestBody PostCargoDto postCargoDto){
-
-        return cargoService.create(postCargoDto);
+    @PostMapping("/cargos")
+    public ResponseEntity<Cargo> addCargo(@RequestBody PostCargoDto postCargoDto){
+        return new ResponseEntity<>(cargoServiceImpl.create(postCargoDto), HttpStatus.CREATED);
     }
 
 
@@ -108,10 +109,9 @@ public class CargoRestController {
                     )
             }
     )
-    @PutMapping("/cargo")
-    public Cargo updateCargo(@RequestBody PutCargoDto putCargoDto){
-        Cargo dbCargo = cargoService.update(, putCargoDto);
-        return dbCargo;
+    @PutMapping("/cargos/{cargoId}")
+    public ResponseEntity<Cargo> updateCargo(@PathVariable Long cargoId,@RequestBody PutCargoDto putCargoDto){
+        return new ResponseEntity<>(cargoServiceImpl.update(cargoId, putCargoDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -132,13 +132,8 @@ public class CargoRestController {
                     )
             }
     )
-    @DeleteMapping("/cargo/{cargoId}")
-    public String deleteCargo(@PathVariable Long cargoId){
-        Cargo tempCargo = cargoService.findById(cargoId);
-        if(tempCargo == null){
-            throw new RuntimeException("Cargo id not found - " + cargoId);
-        }
-        cargoService.deleteById(cargoId);
-        return "Deleted Cargo id - " + cargoId;
+    @DeleteMapping("/cargos/{cargoId}")
+    public ResponseEntity<String> deleteCargoById(@PathVariable Long cargoId) {
+        return new ResponseEntity<>(cargoServiceImpl.deleteById(cargoId), HttpStatus.OK);
     }
 }

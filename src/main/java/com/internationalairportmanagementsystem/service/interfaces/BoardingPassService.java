@@ -15,7 +15,6 @@ public interface BoardingPassService {
 
     BoardingPass findById(Long boardingPassId);
 
-    List<BoardingPass> findByPassengerId(Long passengerId);
 
     String deleteById(Long borderingPassId);
 }

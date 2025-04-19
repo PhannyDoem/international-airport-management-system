@@ -3,10 +3,12 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostMaintenanceDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutMaintenanceDto;
 import com.internationalairportmanagementsystem.enetity.Maintenance;
-import com.internationalairportmanagementsystem.service.interfaces.MaintenanceService;
+import com.internationalairportmanagementsystem.service.implementations.MaintenanceServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,10 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/private")
 public class MaintenanceRestController {
-    private MaintenanceService maintenanceService;
+    private final MaintenanceServiceImpl maintenanceServiceImpl;
     @Autowired
-    public MaintenanceRestController(MaintenanceService theMaintenanceService) {
-        maintenanceService = theMaintenanceService;
+    public MaintenanceRestController(MaintenanceServiceImpl maintenanceServiceImpl) {
+        this.maintenanceServiceImpl = maintenanceServiceImpl;
     }
 
 
@@ -36,8 +38,8 @@ public class MaintenanceRestController {
             }
     )
     @GetMapping("/maintenances")
-    public List<Maintenance> findAll() {
-        return maintenanceService.findAll();
+    public ResponseEntity<List<Maintenance>> findAll() {
+        return new ResponseEntity<>(maintenanceServiceImpl.findAll(), HttpStatus.OK);
     }
     @Operation(
             description = "Endpoint to get a maintenance by ID",
@@ -54,12 +56,8 @@ public class MaintenanceRestController {
             }
     )
     @GetMapping("/maintenances/{maintenanceId}")
-    public Maintenance getMaintenance(@PathVariable Long maintenanceId) {
-        Maintenance theMaintenance = maintenanceService.findById(maintenanceId);
-        if (theMaintenance == null) {
-            throw new RuntimeException("Maintenance id not found - " + maintenanceId);
-        }
-        return theMaintenance;
+    public ResponseEntity<Maintenance> getMaintenance(@PathVariable Long maintenanceId) {
+        return new ResponseEntity<>(maintenanceServiceImpl.findById(maintenanceId), HttpStatus.OK);
     }
     @Operation(
             description = "Endpoint to add a new maintenance",
@@ -76,8 +74,8 @@ public class MaintenanceRestController {
             }
     )
     @PostMapping("/maintenances")
-    public Maintenance addMaintenance(@RequestBody PostMaintenanceDto postMaintenanceDto) {
-        return maintenanceService.create(postMaintenanceDto);
+    public ResponseEntity<Maintenance> addMaintenance(@RequestBody PostMaintenanceDto postMaintenanceDto) {
+        return new ResponseEntity<>(maintenanceServiceImpl.create(postMaintenanceDto), HttpStatus.CREATED);
     }
     @Operation(
             description = "Endpoint to update a maintenance",
@@ -93,9 +91,9 @@ public class MaintenanceRestController {
                     )
             }
     )
-    @PutMapping("/maintenances")
-    public Maintenance updateMaintenance(@RequestBody PutMaintenanceDto putMaintenanceDto) {
-        return maintenanceService.update(, putMaintenanceDto);
+    @PutMapping("/maintenances/{maintenanceId}")
+    public ResponseEntity<Maintenance> updateMaintenance(@PathVariable Long maintenanceId,@RequestBody PutMaintenanceDto putMaintenanceDto) {
+        return new ResponseEntity<>(maintenanceServiceImpl.update(maintenanceId, putMaintenanceDto), HttpStatus.OK);
     }
     @Operation(
             description = "Endpoint to delete a maintenance by ID",
@@ -116,12 +114,7 @@ public class MaintenanceRestController {
             }
     )
     @DeleteMapping("/maintenances/{maintenanceId}")
-    public String deleteMaintenance(@PathVariable Long maintenanceId) {
-        Maintenance tempMaintenance = maintenanceService.findById(maintenanceId);
-        if (tempMaintenance == null) {
-            throw new RuntimeException("Maintenance id not found - " + maintenanceId);
-        }
-        maintenanceService.deleteById(maintenanceId);
-        return "Deleted maintenance id - " + maintenanceId;
+    public ResponseEntity<String> deleteMaintenance(@PathVariable Long maintenanceId) {
+        return new ResponseEntity<>(maintenanceServiceImpl.deleteById(maintenanceId), HttpStatus.OK);
     }
 }

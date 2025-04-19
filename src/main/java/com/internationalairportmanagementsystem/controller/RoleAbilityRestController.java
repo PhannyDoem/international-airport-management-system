@@ -2,21 +2,26 @@ package com.internationalairportmanagementsystem.controller;
 
 import com.internationalairportmanagementsystem.dtos.posts.PostRoleAbilityDto;
 import com.internationalairportmanagementsystem.enetity.Role;
+import com.internationalairportmanagementsystem.service.implementations.RoleAbilityServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.RoleAbilityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/private")
 public class RoleAbilityRestController {
 
-    private RoleAbilityService roleAbilityService;
+    private final RoleAbilityServiceImpl roleAbilityServiceImpl;
 
     @Autowired
-    public RoleAbilityRestController(RoleAbilityService roleAbilityService) {
-        this.roleAbilityService = roleAbilityService;
+    public RoleAbilityRestController(RoleAbilityServiceImpl roleAbilityServiceImpl) {
+        this.roleAbilityServiceImpl = roleAbilityServiceImpl;
     }
 
 
@@ -35,8 +40,8 @@ public class RoleAbilityRestController {
             }
     )
     @PostMapping("/role_abilities")
-    public Role addRoleAbility(@RequestBody PostRoleAbilityDto postRoleAbilityDto) {
-        return roleAbilityService.create(postRoleAbilityDto);
+    public ResponseEntity<Role> addRoleAbility(@RequestBody PostRoleAbilityDto postRoleAbilityDto) {
+        return new ResponseEntity<>(roleAbilityServiceImpl.create(postRoleAbilityDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -58,8 +63,7 @@ public class RoleAbilityRestController {
             }
     )
     @DeleteMapping("/role_abilities/{roleId}/{abilityId}")
-    public String deleteRoleAbilityById(@PathVariable Long roleId, @PathVariable Long abilityId) {
-        roleAbilityService.deleteByRoleIdAndAbilityId(roleId,abilityId);
-        return "Deleted role ability with id - " +  roleId + "-" + abilityId;
+    public void deleteRoleAbilityById(@PathVariable Long roleId, @PathVariable Long abilityId) {
+        roleAbilityServiceImpl.deleteByRoleIdAndAbilityId(roleId, abilityId);
     }
 }

@@ -4,10 +4,12 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostGateAssignmentDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutGateAssignmentDto;
 import com.internationalairportmanagementsystem.enetity.GateAssignment;
-import com.internationalairportmanagementsystem.service.interfaces.GateAssignmentService;
+import com.internationalairportmanagementsystem.service.implementations.GateAssignmentServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +18,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class GateAssignmentRestController {
 
-    private final GateAssignmentService gateAssignmentService;
+    private final GateAssignmentServiceImpl gateAssignmentServiceImpl;
 
     @Autowired
-    public GateAssignmentRestController(GateAssignmentService gateAssignmentService) {
-        this.gateAssignmentService = gateAssignmentService;
+    public GateAssignmentRestController(GateAssignmentServiceImpl gateAssignmentServiceImpl) {
+        this.gateAssignmentServiceImpl = gateAssignmentServiceImpl;
     }
 
     @Operation(
@@ -38,8 +40,8 @@ public class GateAssignmentRestController {
             }
     )
     @GetMapping("/public/gate_assignments")
-    public List<GateAssignment> findAllGateAssignments() {
-        return gateAssignmentService.findAll();
+    public ResponseEntity<List<GateAssignment>> findAllGateAssignments() {
+        return new ResponseEntity<>(gateAssignmentServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -57,8 +59,8 @@ public class GateAssignmentRestController {
             }
     )
     @GetMapping("/public/gate_assignments/{gateAssignmentId}")
-    public GateAssignment getGateAssignmentById(@PathVariable Long gateAssignmentId) {
-        return gateAssignmentService.findById(gateAssignmentId);
+    public ResponseEntity<GateAssignment> getGateAssignmentById(@PathVariable Long gateAssignmentId) {
+        return new ResponseEntity<>(gateAssignmentServiceImpl.findById(gateAssignmentId), HttpStatus.OK);
     }
 
     @Operation(
@@ -76,8 +78,8 @@ public class GateAssignmentRestController {
             }
     )
     @PostMapping("/private/gate_assignments")
-    public GateAssignment addGateAssignment(@RequestBody PostGateAssignmentDto postGateAssignmentDto) {
-        return gateAssignmentService.create(postGateAssignmentDto);
+    public ResponseEntity<GateAssignment> addGateAssignment(@RequestBody PostGateAssignmentDto postGateAssignmentDto) {
+        return new ResponseEntity<>(gateAssignmentServiceImpl.create(postGateAssignmentDto), HttpStatus.CREATED);
     }
 
 
@@ -95,9 +97,9 @@ public class GateAssignmentRestController {
                     )
             }
     )
-    @PutMapping("/private/gate_assignments")
-    public GateAssignment updateGateAssignment(@RequestBody PutGateAssignmentDto putGateAssignmentDto) {
-        return gateAssignmentService.update(, putGateAssignmentDto);
+    @PutMapping("/private/gate_assignments/{assignmentId}")
+    public ResponseEntity<GateAssignment> updateGateAssignment(@PathVariable Long assignmentId,@RequestBody PutGateAssignmentDto putGateAssignmentDto) {
+        return new ResponseEntity<>(gateAssignmentServiceImpl.update(assignmentId,putGateAssignmentDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -119,9 +121,8 @@ public class GateAssignmentRestController {
             }
     )
     @DeleteMapping("/private/gate_assignments/{gateAssignmentId}")
-    public String deleteGateAssignmentById(@PathVariable Long gateAssignmentId) {
-        gateAssignmentService.deleteById(gateAssignmentId);
-        return "Deleted gate assignment id - " + gateAssignmentId;
+    public ResponseEntity<String> deleteGateAssignmentById(@PathVariable Long gateAssignmentId) {
+        return new ResponseEntity<>(gateAssignmentServiceImpl.deleteById(gateAssignmentId), HttpStatus.OK);
     }
 
     @Operation(
@@ -139,7 +140,7 @@ public class GateAssignmentRestController {
             }
     )
     @DeleteMapping("/private/gate_assignments")
-    public String deleteAllGateAssignments() {
-        return gateAssignmentService.deleteAll();
+    public ResponseEntity<String> deleteAllGateAssignments() {
+        return new ResponseEntity<>(gateAssignmentServiceImpl.deleteAll(), HttpStatus.OK);
     }
 }

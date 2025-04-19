@@ -10,14 +10,16 @@ import com.internationalairportmanagementsystem.service.interfaces.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class RoleAbilityServiceImpl implements RoleAbilityService {
-    private RoleRepository roleRepository;
-    private RoleService roleService;
-    private AbilityService abilityService;
+    private final RoleRepository roleRepository;
+    private final RoleService roleService;
+    private final AbilityService abilityService;
 
     @Autowired
-    public RoleAbilityServiceImpl(RoleRepository roleRepository, AbilityService abilityService) {
+    public RoleAbilityServiceImpl(RoleRepository roleRepository, AbilityService abilityService, RoleService roleService) {
         this.roleRepository = roleRepository;
         this.roleService = roleService;
         this.abilityService = abilityService;
@@ -26,14 +28,14 @@ public class RoleAbilityServiceImpl implements RoleAbilityService {
     @Override
     public Role create(PostRoleAbilityDto postRoleAbilityDto) {
      Role role = roleService.findById(postRoleAbilityDto.roleId());
-     Ability ability = abilityService.findById(postRoleAbilityDto.abilityId());
+     Optional<Ability> ability = abilityService.findById(postRoleAbilityDto.abilityId());
      return roleRepository.save(role);
     }
 
     @Override
     public void deleteByRoleIdAndAbilityId(Long roleId, Long abilityId) {
         Role role = roleService.findById(roleId);
-        Ability ability = abilityService.findById(abilityId);
+        Optional<Ability> ability = abilityService.findById(abilityId);
         role.getAbilities().remove(ability);
         roleRepository.save(role);
     }

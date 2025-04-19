@@ -10,17 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class CheckInServiceImpl implements CheckInService {
-    private CheckInRepository checkInRepository;
-    private CheckInMapper checkInMapper;
+    private final CheckInRepository checkInRepository;
+    private final CheckInMapper checkInMapper;
+
     @Autowired
-    public  CheckInServiceImpl(CheckInRepository checkInRepository, CheckInMapper checkInMapper) {
+    public CheckInServiceImpl(CheckInRepository checkInRepository, CheckInMapper checkInMapper) {
         this.checkInRepository = checkInRepository;
         this.checkInMapper = checkInMapper;
     }
+
 
     @Override
     public CheckIn create(PostCheckInDto postCheckInDto) {
@@ -36,14 +38,10 @@ public class CheckInServiceImpl implements CheckInService {
 
     @Override
     public CheckIn findById(Long checkInId) {
-        Optional<CheckIn> result = checkInRepository.findById(checkInId);
-        CheckIn checkIn = null;
-        if(result.isPresent()) {
-            checkIn = result.get();
-        }else {
-            throw new RuntimeException("CheckIn Not Found");
+        if (checkInId != null){
+            checkInRepository.findById(checkInId);
         }
-        return checkIn;
+        return checkInRepository.findById(Objects.requireNonNull(checkInId)).orElse(null);
     }
 
     @Override
@@ -52,13 +50,20 @@ public class CheckInServiceImpl implements CheckInService {
     }
 
     @Override
-    public List<CheckIn> findByPassengerId(Long passengerId) {
-        return checkInRepository.findByPassengerId(passengerId);
+    public CheckIn findByPassengerId(Long passengerId) {
+        if (passengerId != null){
+            checkInRepository.findByPassengerId(passengerId);
+        }
+        return checkInRepository.findById(Objects.requireNonNull(passengerId))
+                .orElseThrow(()-> new RuntimeException("Find Passenger with Id " + passengerId + " not found"));
     }
 
     @Override
     public String deleteById(Long checkInId) {
-        checkInRepository.deleteById(checkInId);
+        if (checkInId != null){
+             checkInRepository.deleteById(checkInId);
+        }else
+            return "Delete CheckIn with Id " + null + " not found";
         return "Deleted CheckIn with Id " + checkInId;
     }
 

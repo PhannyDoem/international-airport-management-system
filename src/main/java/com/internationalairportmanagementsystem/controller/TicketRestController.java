@@ -6,32 +6,32 @@ import com.internationalairportmanagementsystem.enetity.Passenger;
 import com.internationalairportmanagementsystem.enetity.Ticket;
 import com.internationalairportmanagementsystem.enetity.UserEntity;
 import com.internationalairportmanagementsystem.exceptions.AuthorizationException;
-import com.internationalairportmanagementsystem.service.interfaces.PassengerService;
-import com.internationalairportmanagementsystem.service.interfaces.TicketService;
+import com.internationalairportmanagementsystem.service.implementations.TicketServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.UserEntityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/private")
 public class TicketRestController {
-    private TicketService ticketService;
-
-    private UserEntityService userEntityService;
-    private PassengerService passengerService;
+    private  final TicketServiceImpl ticketServiceImpl;
+    private final UserEntityService userEntityService;
 
     @Autowired
-    public TicketRestController(TicketService theTicketService,
-                                UserEntityService userEntityService, PassengerService passengerService){
-        this.ticketService = theTicketService;
+    public TicketRestController(TicketServiceImpl theTicketServiceImpl,
+                                UserEntityService userEntityService
+    ){
+        this.ticketServiceImpl = theTicketServiceImpl;
         this.userEntityService = userEntityService;
-        this.passengerService = passengerService;
     }
 
     @Operation(
@@ -54,10 +54,10 @@ public class TicketRestController {
 
         if (isPassenger(user)) {
             Passenger passenger = user.getPassenger();
-            return ticketService.findByPassengerId(passenger.getPassengerId());
+            return ticketServiceImpl.findByPassengerId(passenger.getPassengerId());
         }
 
-        return ticketService.findAll();
+        return ticketServiceImpl.findAll();
     }
 
     @Operation(
@@ -79,16 +79,16 @@ public class TicketRestController {
             }
     )
     @GetMapping("/tickets/{ticketId}")
-    public Ticket getTicket(@PathVariable Long ticketId){
+    public ResponseEntity<Ticket> getTicket(@PathVariable Long ticketId){
 
-        Ticket theTicket = ticketService.findById(ticketId);
+        Ticket theTicket = ticketServiceImpl.findById(ticketId);
         if (theTicket == null) {
             throw new RuntimeException("Ticket id not found - " + ticketId);
         }
         UserEntity user = getAuthenticatedUser();
         authorizeAccess(user, theTicket);
 
-        return theTicket;
+        return new ResponseEntity<>(theTicket,  HttpStatus.OK) ;
     }
 
     @Operation(
@@ -106,9 +106,8 @@ public class TicketRestController {
             }
     )
     @PostMapping("/tickets")
-    public Ticket addTicket(@RequestBody PostTicketDto postTicketDto){
-
-        return ticketService.create(postTicketDto);
+    public ResponseEntity<Ticket> addTicket(@RequestBody PostTicketDto postTicketDto){
+        return new ResponseEntity<>(ticketServiceImpl.create(postTicketDto), HttpStatus.CREATED) ;
 
     }
 
@@ -126,9 +125,9 @@ public class TicketRestController {
                     )
             }
     )
-    @PutMapping("/tickets")
-    public Ticket updateTicket(@RequestBody PutTicketDto putTicketDto){
-        return ticketService.update(, putTicketDto);
+    @PutMapping("/tickets/{ticketId}")
+    public ResponseEntity<Ticket> updateTicket(@PathVariable Long ticketId,@RequestBody PutTicketDto putTicketDto){
+        return new ResponseEntity<>(ticketServiceImpl.update(ticketId, putTicketDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -150,13 +149,8 @@ public class TicketRestController {
             }
     )
     @DeleteMapping("/tickets/{ticketId}")
-    public String deleteTicket(@PathVariable Long ticketId){
-        Ticket tempTicket = ticketService.findById(ticketId);
-        if(tempTicket == null){
-            throw new RuntimeException("Ticket id not found - " + ticketId);
-        }
-        ticketService.deleteById(ticketId);
-        return "Deleted Ticket id - " + ticketId;
+    public ResponseEntity<String> deleteTicket(@PathVariable Long ticketId){
+        return new ResponseEntity<>(ticketServiceImpl.deleteById(ticketId), HttpStatus.OK);
     }
 
     private UserEntity getAuthenticatedUser() {
@@ -173,7 +167,7 @@ public class TicketRestController {
     private void authorizeAccess(UserEntity user, Ticket ticket) {
         if (isPassenger(user)) {
             Passenger passenger = user.getPassenger();
-            if (passenger.getPassengerId() != ticket.getPassenger().getPassengerId()) {
+            if (!Objects.equals(passenger.getPassengerId(), ticket.getPassenger().getPassengerId())) {
                 throw new AuthorizationException("You don't have access to this resource");
             }
         }

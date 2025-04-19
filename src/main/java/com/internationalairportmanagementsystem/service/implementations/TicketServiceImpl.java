@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TicketServiceImpl implements TicketService {
-    private TicketRepository ticketRepository;
-    private TicketMapper ticketMapper;
+    private final TicketRepository ticketRepository;
+    private final TicketMapper ticketMapper;
 
     @Autowired
     public TicketServiceImpl(TicketRepository ticketRepository, TicketMapper ticketMapper) {
@@ -30,8 +31,25 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket update(Long ticketId, PutTicketDto putTicketDto) {
-        Ticket ticket = ticketMapper.putToTicket(putTicketDto);
-        return ticketRepository.save(ticket);
+        if (ticketId != null){
+            ticketRepository.findById(ticketId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                            update -> {
+                                update.setFlight(putTicketDto.flight());
+                                update.setPassenger(putTicketDto.passenger());
+                                update.setPrice(putTicketDto.price());
+                                update.setBoardingPass(putTicketDto.boardingPass());
+                                update.set_class(putTicketDto._class());
+                                update.setSeatNumber(putTicketDto.seatNumber());
+                                Ticket ticket = ticketRepository.save(update);
+                                return ticketRepository.save(ticket);
+                            }
+                    );
+        }
+        return ticketRepository.findById(Objects.requireNonNull(ticketId))
+                .orElseThrow(()-> new  RuntimeException("Update not found"));
     }
 
     @Override

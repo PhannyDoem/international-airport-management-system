@@ -10,15 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MaintenanceServiceImpl implements MaintenanceService {
-    private MaintenanceRepository maintenanceRepository;
-    private MaintenanceMapper maintenanceMapper;
+    private final MaintenanceRepository maintenanceRepository;
+    private final MaintenanceMapper maintenanceMapper;
 
     @Autowired
-    public MaintenanceServiceImpl(MaintenanceRepository maintenanceRepository) {
+    public MaintenanceServiceImpl(MaintenanceRepository maintenanceRepository, MaintenanceMapper maintenanceMapper) {
         this.maintenanceRepository = maintenanceRepository;
+        this.maintenanceMapper = maintenanceMapper;
     }
 
     @Override
@@ -29,8 +31,23 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public Maintenance update(Long maintenanceId, PutMaintenanceDto putMaintenanceDto) {
-        Maintenance maintenance = maintenanceMapper.putToMaintenance(putMaintenanceDto);
-        return maintenanceRepository.save(maintenance);
+        if (maintenanceId != null){
+            maintenanceRepository.findById(maintenanceId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                            updated -> {
+                                updated.setAircraft(putMaintenanceDto.aircraft());
+                                updated.setType(putMaintenanceDto.type());
+                                updated.setDate(putMaintenanceDto.date());
+                                updated.setDescription(putMaintenanceDto.description());
+                                Maintenance maintenance = maintenanceRepository.save(updated);
+                                return maintenanceRepository.save(maintenance);
+                            }
+                    );
+        }
+        return maintenanceRepository.findById(Objects.requireNonNull(maintenanceId))
+                .orElseThrow(() -> new RuntimeException("Maintenance not found"));
     }
 
     @Override

@@ -4,9 +4,10 @@ import com.internationalairportmanagementsystem.dtos.posts.PostMaintenanceDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutMaintenanceDto;
 import com.internationalairportmanagementsystem.enetity.Aircraft;
 import com.internationalairportmanagementsystem.enetity.Maintenance;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-
+@Service
 public class MaintenanceMapper {
     public Maintenance postToMaintenance(PostMaintenanceDto postMaintenanceDto) {
         Maintenance maintenance = new Maintenance(

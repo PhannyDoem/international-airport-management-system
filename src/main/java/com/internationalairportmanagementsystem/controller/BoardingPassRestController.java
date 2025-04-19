@@ -6,28 +6,32 @@ import com.internationalairportmanagementsystem.enetity.BoardingPass;
 import com.internationalairportmanagementsystem.enetity.Passenger;
 import com.internationalairportmanagementsystem.enetity.UserEntity;
 import com.internationalairportmanagementsystem.exceptions.AuthorizationException;
+import com.internationalairportmanagementsystem.service.implementations.BoardingPassServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.BoardingPassService;
 import com.internationalairportmanagementsystem.service.interfaces.UserEntityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/private")
 public class BoardingPassRestController {
 
-    private BoardingPassService boardingPassService;
+    private final BoardingPassServiceImpl boardingPassServiceImpl;
 
-    private UserEntityService userEntityService;
+    private final UserEntityService userEntityService;
 
     @Autowired
-    public BoardingPassRestController(BoardingPassService theBoardingPassService, UserEntityService userEntityService){
-        boardingPassService = theBoardingPassService;
+    public BoardingPassRestController(BoardingPassServiceImpl theBoardingPassServiceImpl, UserEntityService userEntityService){
+        this.boardingPassServiceImpl = theBoardingPassServiceImpl;
         this.userEntityService = userEntityService;
     }
 
@@ -45,16 +49,9 @@ public class BoardingPassRestController {
                     )
             }
     )
-    @GetMapping("/boarding_passes")
-    public List<BoardingPass> findAll(){
-        UserEntity user = getAuthenticatedUser();
-
-        if (isPassenger(user)) {
-            Passenger passenger = user.getPassenger();
-            return boardingPassService.findByPassengerId(passenger.getPassengerId());
-        }
-
-        return boardingPassService.findAll();
+    @GetMapping("/boarding/pass")
+    public ResponseEntity<List<BoardingPass>> findAll(){
+        return new ResponseEntity<>(boardingPassServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -75,10 +72,10 @@ public class BoardingPassRestController {
                     )
             }
     )
-    @GetMapping("/boarding_passes/{boarding_passId}")
+    @GetMapping("/boarding/passes/{boarding_passId}")
     public BoardingPass getBoardingPass(@PathVariable Long boarding_passId){
 
-        BoardingPass theBoardingPass = boardingPassService.findById(boarding_passId);
+        BoardingPass theBoardingPass = boardingPassServiceImpl.findById(boarding_passId);
         if(theBoardingPass == null){
             throw new RuntimeException("Boarding Pass id not found - " + boarding_passId);
         }
@@ -101,9 +98,9 @@ public class BoardingPassRestController {
                     )
             }
     )
-    @PostMapping("/boarding_passes")
-    public BoardingPass addBoardingPass(@RequestBody PostBoardingPassDto postBoardingPassDto){
-        return boardingPassService.create(postBoardingPassDto);
+    @PostMapping("/boarding/passes")
+    public ResponseEntity<BoardingPass> addBoardingPass(@RequestBody PostBoardingPassDto postBoardingPassDto){
+        return new ResponseEntity<>(boardingPassServiceImpl.create(postBoardingPassDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -124,9 +121,9 @@ public class BoardingPassRestController {
                     )
             }
     )
-    @PutMapping("/boarding_passes")
-    public BoardingPass updateBoardingPass(@RequestBody PutBoardingPassDto putBoardingPassDto){
-        return boardingPassService.update(, putBoardingPassDto);
+    @PutMapping("/boarding/passes/{boardingId}")
+    public ResponseEntity<BoardingPass> updateBoardingPass(@PathVariable Long boardingId,@RequestBody PutBoardingPassDto putBoardingPassDto){
+        return new ResponseEntity<>(boardingPassServiceImpl.update(boardingId, putBoardingPassDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -148,13 +145,8 @@ public class BoardingPassRestController {
             }
     )
     @DeleteMapping("/boarding_passes/{boarding_passId}")
-    public String deleteBoardingPass(@PathVariable Long boarding_passId){
-        BoardingPass tempBoardingPass = boardingPassService.findById(boarding_passId);
-        if(tempBoardingPass == null){
-            throw new RuntimeException("Boarding Pass id not found - " + boarding_passId);
-        }
-        boardingPassService.deleteById(boarding_passId);
-        return "Deleted Boarding Pass id - " + boarding_passId;
+    public ResponseEntity<String>deleteBoardingPass(@PathVariable Long boarding_passId){
+        return new ResponseEntity<>(boardingPassServiceImpl.deleteById(boarding_passId), HttpStatus.OK);
     }
 
     private UserEntity getAuthenticatedUser() {
@@ -171,7 +163,7 @@ public class BoardingPassRestController {
     private void authorizeAccess(UserEntity user, BoardingPass boardingPass) {
         if (isPassenger(user)) {
             Passenger passenger = user.getPassenger();
-            if (passenger.getPassengerId() != boardingPass.getTicket().getPassenger().getPassengerId()) {
+            if (!Objects.equals(passenger.getPassengerId(), boardingPass.getTicket().getPassenger().getPassengerId())) {
                 throw new AuthorizationException("You don't have access to this resource");
             }
         }

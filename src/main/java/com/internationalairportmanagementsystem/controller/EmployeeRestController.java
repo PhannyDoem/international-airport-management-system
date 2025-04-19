@@ -6,9 +6,8 @@ import com.internationalairportmanagementsystem.dtos.posts.PostLongInDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutEmployeeDto;
 import com.internationalairportmanagementsystem.enetity.Employee;
 import com.internationalairportmanagementsystem.enetity.UserEntity;
-import com.internationalairportmanagementsystem.exceptions.AuthorizationException;
 import com.internationalairportmanagementsystem.security.JWTGenerator;
-import com.internationalairportmanagementsystem.service.interfaces.EmployeeService;
+import com.internationalairportmanagementsystem.service.implementations.EmployeeServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.UserEntityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,25 +22,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
 public class EmployeeRestController {
-    private EmployeeService employeeService;
-    private AuthenticationManager authenticationManager;
-
-    private JWTGenerator jwtGenerator;
-
-    private UserEntityService userEntityService;
+    private final EmployeeServiceImpl employeeServiceImpl;
+    private final AuthenticationManager authenticationManager;
+    private final JWTGenerator jwtGenerator;
+    private final UserEntityService userEntityService;
     @Autowired
-    public EmployeeRestController(EmployeeService theEmployeeService,
+    public EmployeeRestController(EmployeeServiceImpl employeeServiceImpl,
                                   AuthenticationManager authenticationManager,
                                   JWTGenerator jwtGenerator,
                                   UserEntityService userEntityService) {
+        this.employeeServiceImpl = employeeServiceImpl;
         this.authenticationManager = authenticationManager;
         this.jwtGenerator=jwtGenerator;
-        employeeService = theEmployeeService;
         this.userEntityService = userEntityService;
     }
 
@@ -86,11 +82,11 @@ public class EmployeeRestController {
     )
     @PostMapping("/private/auth/employees/register")
     public ResponseEntity<String> register(@RequestBody PostEmployeeDto postEmployeeDto) {
-        if (userEntityService.existsByUsername(postEmployeeDto.username())) {
+        if (userEntityService.existsByUsername(postEmployeeDto.userEntity().getUsername())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
 
-        employeeService.create(postEmployeeDto);
+        employeeServiceImpl.create(postEmployeeDto);
 
         return new ResponseEntity<>("Employee registered successfully!", HttpStatus.OK);
     }
@@ -112,11 +108,11 @@ public class EmployeeRestController {
     public List<Employee> findAll() {
         UserEntity user = getAuthenticatedUser();
         if (isEmployee(user)) {
-            Employee employee = employeeService.findById(user.getEmployee().getEmployeeId());
+            Employee employee = employeeServiceImpl.findById(user.getEmployee().getEmployeeId());
             return Collections.singletonList(employee);
         }
 
-        return employeeService.findAll();
+        return employeeServiceImpl.findAll();
     }
     @Operation(
             description = "Endpoint to retrieve an employee by ID",
@@ -137,15 +133,8 @@ public class EmployeeRestController {
             }
     )
     @GetMapping("/private/employees/{employeeId}")
-    public Employee getEmployee(@PathVariable Long employeeId) {
-        Employee theEmployee = employeeService.findById(employeeId);
-        if(theEmployee == null){
-            throw new RuntimeException("Employee id not found - " + theEmployee);
-        }
-        UserEntity user = getAuthenticatedUser();
-        authorizeAccess(user, theEmployee);
-
-        return theEmployee;
+    public ResponseEntity<Employee> getEmployee(@PathVariable Long employeeId) {
+        return new ResponseEntity<>(employeeServiceImpl.findById(employeeId), HttpStatus.OK);
     }
 
     @Operation(
@@ -166,21 +155,9 @@ public class EmployeeRestController {
                     )
             }
     )
-    @PutMapping("/private/employees")
-    public ResponseEntity<String> updateEmployee(@RequestBody PutEmployeeDto putEmployeeDto) {
-
-        Employee theEmployee = employeeService.findById(putEmployeeDto.employeeId());
-        UserEntity user = theEmployee.getUserEntity();
-
-        if (userEntityService.existsByUsername(putEmployeeDto.username()) &&
-                !putEmployeeDto.username().equals(user.getUsername())) {
-            return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
-        }
-
-        UserEntity user1 = getAuthenticatedUser();
-        authorizeAccess(user1, theEmployee);
-        employeeService.update(, putEmployeeDto);
-        return new ResponseEntity<>("Employee updated successfully!", HttpStatus.OK);
+    @PutMapping("/private/employees/{employeeId}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long employeeId,@RequestBody PutEmployeeDto putEmployeeDto) {
+        return new ResponseEntity<>(employeeServiceImpl.update(employeeId, putEmployeeDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -202,15 +179,8 @@ public class EmployeeRestController {
             }
     )
     @DeleteMapping("/private/employees/{employeeId}")
-    public String deleteEmployee(@PathVariable Long employeeId) {
-        Employee theEmployee = employeeService.findById(employeeId);
-        if(theEmployee == null){
-            throw new RuntimeException("Employee id not found - " + theEmployee);
-        }
-        UserEntity user = getAuthenticatedUser();
-        authorizeAccess(user, theEmployee);
-        employeeService.deleteById(employeeId);
-        return "Deleted Employee id - " + employeeId;
+    public ResponseEntity<String> deleteEmployee(@PathVariable Long employeeId) {
+        return new ResponseEntity<>(employeeServiceImpl.deleteById(employeeId), HttpStatus.OK);
     }
 
     private UserEntity getAuthenticatedUser() {
@@ -223,12 +193,4 @@ public class EmployeeRestController {
         return user.getRole().getRoleName().equals("EMPLOYEE");
     }
 
-    private void authorizeAccess(UserEntity user, Employee employee) {
-        if (isEmployee(user)) {
-            Employee theEmployee = user.getEmployee();
-            if (!Objects.equals(theEmployee.getEmployeeId(), employee.getEmployeeId())) {
-                throw new AuthorizationException("You don't have access to this resource");
-            }
-        }
-    }
 }

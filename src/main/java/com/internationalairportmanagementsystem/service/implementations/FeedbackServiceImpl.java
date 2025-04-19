@@ -10,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
-    private FeedbackRepository feedbackRepository;
-    private FeedbackMapper feedbackMapper;
+    private final FeedbackRepository feedbackRepository;
+    private final FeedbackMapper feedbackMapper;
     @Autowired
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository, FeedbackMapper feedbackMapper) {
         this.feedbackRepository = feedbackRepository;
@@ -30,8 +31,23 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public Feedback update(Long feedbackId, PutFeedbackDto putFeedbackDto) {
-        Feedback feedback = feedbackMapper.putToFeedback(putFeedbackDto);
-        return feedbackRepository.save(feedback);
+        if (feedbackId != null){
+            feedbackRepository.findById(feedbackId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                            updated -> {
+                                updated.setStatus(putFeedbackDto.status());
+                                updated.setContent(putFeedbackDto.content());
+                                updated.setFlight(putFeedbackDto.flight());
+                                updated.setPassenger(putFeedbackDto.passenger());
+                                Feedback feedback = feedbackRepository.save(updated);
+                                return feedbackRepository.save(feedback);
+                            }
+                    );
+        }
+        return feedbackRepository.findById(Objects.requireNonNull(feedbackId))
+                .orElseThrow(()-> new IllegalArgumentException("Feedback id not found"));
     }
 
     @Override
@@ -41,10 +57,8 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public Feedback findById(Long feedbackId) {
-        Optional<Feedback> result = feedbackRepository.findById(feedbackId);
-        Feedback feedback = result.get();
-        feedback = result.get();
-        return feedback;
+        return feedbackRepository.findById(feedbackId)
+                .orElseThrow(()-> new IllegalArgumentException("Feedback id not found"));
     }
 
     @Override

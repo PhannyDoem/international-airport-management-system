@@ -2,10 +2,13 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostRentalServiceDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutRentalServiceDto;
 import com.internationalairportmanagementsystem.enetity.RentalService;
+import com.internationalairportmanagementsystem.service.implementations.RentalServiceServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.RentalServiceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,11 +17,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class RentalServiceRestController {
 
-    private RentalServiceService rentalServiceService;
+    private final RentalServiceServiceImpl rentalServiceServiceImpl;
 
     @Autowired
-    public RentalServiceRestController(RentalServiceService theRentalService){
-        rentalServiceService=theRentalService;
+    public RentalServiceRestController(RentalServiceServiceImpl rentalServiceServiceImpl){
+        this.rentalServiceServiceImpl=rentalServiceServiceImpl;
     }
 
     @Operation(
@@ -36,8 +39,8 @@ public class RentalServiceRestController {
             }
     )
     @GetMapping("/public/rental_services")
-    public List<RentalService> findAllRentalServices(){
-        return rentalServiceService.findAll();
+    public ResponseEntity<List<RentalService>> findAllRentalServices(){
+        return new ResponseEntity<>(rentalServiceServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -55,12 +58,8 @@ public class RentalServiceRestController {
             }
     )
     @GetMapping("/public/rental_services/{rentalServiceId}")
-    public RentalService getRentalServiceById(@PathVariable Long rentalServiceId){
-        RentalService theRentalService=rentalServiceService.findById(rentalServiceId);
-        if(theRentalService==null){
-            throw new RuntimeException("Id not found - "+rentalServiceId);
-        }
-        return theRentalService;
+    public ResponseEntity<RentalService> getRentalServiceById(@PathVariable Long rentalServiceId){
+        return new ResponseEntity<>(rentalServiceServiceImpl.findById(rentalServiceId), HttpStatus.OK);
     }
 
     @Operation(
@@ -78,8 +77,8 @@ public class RentalServiceRestController {
             }
     )
     @PostMapping("/private/rental_services")
-    public RentalService addRentalService(@RequestBody PostRentalServiceDto postRentalServiceDto){
-        return rentalServiceService.create(postRentalServiceDto);
+    public ResponseEntity<RentalService> addRentalService(@RequestBody PostRentalServiceDto postRentalServiceDto){
+        return new ResponseEntity<>(rentalServiceServiceImpl.create(postRentalServiceDto),  HttpStatus.CREATED);
     }
 
 
@@ -97,9 +96,9 @@ public class RentalServiceRestController {
                     )
             }
     )
-    @PutMapping("/private/rental_services")
-    public RentalService updateRentalService(@RequestBody PutRentalServiceDto putRentalServiceDto){
-        return rentalServiceService.update(putRentalServiceDto);
+    @PutMapping("/private/rental_services/{rentalServiceId}")
+    public ResponseEntity<RentalService> updateRentalService(@PathVariable Long rentalServiceId,@RequestBody PutRentalServiceDto putRentalServiceDto){
+        return new ResponseEntity<>(rentalServiceServiceImpl.update(rentalServiceId,putRentalServiceDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -121,32 +120,8 @@ public class RentalServiceRestController {
             }
     )
     @DeleteMapping("/private/rental_services/{rentalServiceId}")
-    public String deleteRentalServiceById(@PathVariable Long rentalServiceId){
-        RentalService rentalService = rentalServiceService.findById(rentalServiceId);
-        if(rentalService==null){
-            throw new RuntimeException("Id not found - "+rentalServiceId);
-
-        }
-        rentalServiceService.deleteById(rentalServiceId);
-        return "Deleted Rental Service id - "+rentalServiceId;
+    public ResponseEntity<String> deleteRentalServiceById(@PathVariable Long rentalServiceId){
+        return new  ResponseEntity<>(rentalServiceServiceImpl.deleteById(rentalServiceId), HttpStatus.OK);
     }
 
-    @Operation(
-            description = "Endpoint to delete all rental services",
-            summary = "Delete all rental services",
-            responses = {
-                    @ApiResponse(
-                            description = "Successfully deleted all rental services",
-                            responseCode = "200"
-                    ),
-                    @ApiResponse(
-                            description = "Access unauthorized",
-                            responseCode = "401"
-                    )
-            }
-    )
-    @DeleteMapping("/private/rental_services")
-    public String deleteAllRentalServices() {
-        return rentalServiceService.deleteAll();
-    }
 }

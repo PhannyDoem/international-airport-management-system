@@ -3,10 +3,12 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostSecurityCheckpointDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutSecurityCheckpointDto;
 import com.internationalairportmanagementsystem.enetity.SecurityCheckPoint;
-import com.internationalairportmanagementsystem.service.interfaces.SecurityCheckpointService;
+import com.internationalairportmanagementsystem.service.implementations.SecurityCheckpointServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,12 +17,15 @@ import java.util.List;
 @RequestMapping("/api/private")
 public class SecurityCheckpointRestController {
 
-    private SecurityCheckpointService securityCheckpointService;
+    private final SecurityCheckpointServiceImpl securityCheckpointServiceImpl;
 
     @Autowired
-    public SecurityCheckpointRestController(SecurityCheckpointService theSecurityCheckpointService){
-        securityCheckpointService=theSecurityCheckpointService;
+    public SecurityCheckpointRestController(SecurityCheckpointServiceImpl securityCheckpointServiceImpl) {
+        this.securityCheckpointServiceImpl = securityCheckpointServiceImpl;
     }
+
+
+
 
     @Operation(
             description = "Get all security checkpoints",
@@ -37,8 +42,8 @@ public class SecurityCheckpointRestController {
             }
     )
     @GetMapping("/security_checkpoints")
-    public List<SecurityCheckPoint> findAllSecurityCheckpoints(){
-        return securityCheckpointService.findAll();
+    public ResponseEntity<List<SecurityCheckPoint>> findAllSecurityCheckpoints(){
+        return new ResponseEntity<>(securityCheckpointServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -60,12 +65,8 @@ public class SecurityCheckpointRestController {
             }
     )
     @GetMapping("/security_checkpoints/{securityCheckpointId}")
-    public SecurityCheckPoint getSecurityCheckpointById(@PathVariable Long securityCheckpointId){
-        SecurityCheckPoint securityCheckpoint=securityCheckpointService.findById(securityCheckpointId);
-        if(securityCheckpoint==null){
-            throw new RuntimeException("Id not found - "+securityCheckpointId);
-        }
-        return securityCheckpoint;
+    public ResponseEntity<SecurityCheckPoint> getSecurityCheckpointById(@PathVariable Long securityCheckpointId){
+        return new ResponseEntity<>(securityCheckpointServiceImpl.findById(securityCheckpointId), HttpStatus.OK);
     }
 
     @Operation(
@@ -83,8 +84,8 @@ public class SecurityCheckpointRestController {
             }
     )
     @PostMapping("/security_checkpoints")
-    public SecurityCheckPoint addSecurityCheckpoint(@RequestBody PostSecurityCheckpointDto postSecurityCheckpointDto){
-        return securityCheckpointService.create(postSecurityCheckpointDto);
+    public ResponseEntity<SecurityCheckPoint> addSecurityCheckpoint(@RequestBody PostSecurityCheckpointDto postSecurityCheckpointDto){
+        return new ResponseEntity<>(securityCheckpointServiceImpl.create(postSecurityCheckpointDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -101,9 +102,9 @@ public class SecurityCheckpointRestController {
                     )
             }
     )
-    @PutMapping("/security_checkpoints")
-    public SecurityCheckPoint updateSecurityCheckpoint(@RequestBody PutSecurityCheckpointDto putSecurityCheckpointDto){
-        return securityCheckpointService.update(, putSecurityCheckpointDto);
+    @PutMapping("/security_checkpoints/{securityId}")
+    public ResponseEntity<SecurityCheckPoint> updateSecurityCheckpoint(@PathVariable Long securityId,@RequestBody PutSecurityCheckpointDto putSecurityCheckpointDto){
+        return new ResponseEntity<>(securityCheckpointServiceImpl.update(securityId,putSecurityCheckpointDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -125,14 +126,8 @@ public class SecurityCheckpointRestController {
             }
     )
     @DeleteMapping("/security_checkpoints/{securityCheckpointId}")
-    public String deleteSecurityCheckpointById(@PathVariable Long securityCheckpointId){
-        SecurityCheckPoint securityCheckpoint = securityCheckpointService.findById(securityCheckpointId);
-        if(securityCheckpoint==null){
-            throw new RuntimeException("Id not found - "+securityCheckpointId);
-
-        }
-        securityCheckpointService.deleteById(securityCheckpointId);
-        return "Deleted Security Checkpoint id - "+securityCheckpointId;
+    public ResponseEntity<String> deleteSecurityCheckpointById(@PathVariable Long securityCheckpointId){
+        return new ResponseEntity<>(securityCheckpointServiceImpl.deleteById(securityCheckpointId), HttpStatus.OK);
     }
     @Operation(
             description = "Delete all security checkpoints",
@@ -149,7 +144,7 @@ public class SecurityCheckpointRestController {
             }
     )
     @DeleteMapping("/security_checkpoints")
-    public String deleteAllSecurityCheckpoints() {
-        return securityCheckpointService.deleteAll();
+    public ResponseEntity<String> deleteAllSecurityCheckpoints() {
+        return new ResponseEntity<>(securityCheckpointServiceImpl.deleteAll(), HttpStatus.OK);
     }
 }

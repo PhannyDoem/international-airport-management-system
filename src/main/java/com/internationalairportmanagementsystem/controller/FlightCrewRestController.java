@@ -2,21 +2,24 @@ package com.internationalairportmanagementsystem.controller;
 
 import com.internationalairportmanagementsystem.dtos.posts.PostFlightCrewDto;
 import com.internationalairportmanagementsystem.enetity.Flight;
+import com.internationalairportmanagementsystem.service.implementations.FlightCrewServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.FlightCrewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/private")
 public class FlightCrewRestController {
 
-    private FlightCrewService flightCrewService;
+    private final FlightCrewServiceImpl flightCrewServiceImpl;
 
     @Autowired
-    public FlightCrewRestController(FlightCrewService flightCrewService) {
-        this.flightCrewService = flightCrewService;
+    public FlightCrewRestController(FlightCrewServiceImpl flightCrewServiceImpl) {
+        this.flightCrewServiceImpl = flightCrewServiceImpl;
     }
 
     @Operation(
@@ -34,8 +37,8 @@ public class FlightCrewRestController {
             }
     )
     @PostMapping("/flight_crews")
-    public Flight addFlightCrew(@RequestBody PostFlightCrewDto postFlightCrewDto) {
-        return flightCrewService.create(postFlightCrewDto);
+    public ResponseEntity<Flight> addFlightCrew(@RequestBody PostFlightCrewDto postFlightCrewDto) {
+        return new ResponseEntity<>(flightCrewServiceImpl.create(postFlightCrewDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -57,9 +60,8 @@ public class FlightCrewRestController {
             }
     )
     @DeleteMapping("/flight_crews/{flightId}/{employeeId}")
-    public String deleteFlightCrewById(@PathVariable Long flightId, @PathVariable Long employeeId) {
-        flightCrewService.deleteByFlightIdAndEmployeeId(flightId, employeeId);
-        return "Deleted flight crew with id - " +  flightId + "-" + employeeId;
+    public Flight deleteFlightCrewById(@PathVariable Long flightId, @PathVariable Long employeeId) {
+        return flightCrewServiceImpl.deleteByFlightIdAndEmployeeId(flightId, employeeId);
     }
 
 

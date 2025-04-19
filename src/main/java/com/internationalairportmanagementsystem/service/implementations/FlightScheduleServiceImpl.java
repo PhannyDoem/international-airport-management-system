@@ -9,12 +9,14 @@ import com.internationalairportmanagementsystem.service.interfaces.FlightSchedul
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class FlightScheduleServiceImpl implements FlightScheduleService {
-    private FlightScheduleRepository flightScheduleRepository;
-    private FlightScheduleMapper flightScheduleMapper;
+    private final FlightScheduleRepository flightScheduleRepository;
+    private final FlightScheduleMapper flightScheduleMapper;
 
     @Autowired
     public FlightScheduleServiceImpl(FlightScheduleRepository flightScheduleRepository, FlightScheduleMapper flightScheduleMapper) {
@@ -30,13 +32,30 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
     @Override
     public FlightSchedule update(Long flightScheduleId, PutFlightScheduleDto putFlightScheduleDto) {
-        FlightSchedule flightSchedule = flightScheduleMapper.putToSchedule(putFlightScheduleDto);
-        return flightScheduleRepository.save(flightSchedule);
+        if (flightScheduleId != null) {
+             flightScheduleRepository.findById(flightScheduleId)
+                    .stream()
+                    .findFirst()
+                    .map(
+                        updatedFlightSchedule    -> {
+                                updatedFlightSchedule.setFlight(putFlightScheduleDto.flight());
+                                updatedFlightSchedule.setStatus(putFlightScheduleDto.status());
+                                updatedFlightSchedule.setScheduledArrivalTime(putFlightScheduleDto.scheduledArrivalTime());
+                                updatedFlightSchedule.setScheduledDepartureTime(putFlightScheduleDto.scheduledDepartureTime());
+                                FlightSchedule flightSchedule = flightScheduleRepository.save(updatedFlightSchedule);
+                                return flightScheduleRepository.save(flightSchedule);
+                        }
+
+                    );
+        }
+        return flightScheduleRepository.findById(Objects.requireNonNull(flightScheduleId))
+                .orElseThrow(() -> new RuntimeException("Update Schedule with ID not found!"));
     }
 
     @Override
     public FlightSchedule findById(Long scheduleId) {
-        return null;
+        return flightScheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("Schedule with ID not found!"));
     }
 
     @Override
@@ -52,6 +71,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
     @Override
     public String deleteAll() {
+        flightScheduleRepository.deleteAll();
         return "Deleted all successfully";
     }
 }

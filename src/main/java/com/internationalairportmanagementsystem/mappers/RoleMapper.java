@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RoleMapper {
+
     public Role postRole(PostRoleDto  postRoleDto) {
         Role role = new Role(postRoleDto.roleName());
         role.setRoleId(0L);

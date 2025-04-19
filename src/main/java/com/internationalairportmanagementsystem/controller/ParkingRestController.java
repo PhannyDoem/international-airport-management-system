@@ -3,10 +3,13 @@ package com.internationalairportmanagementsystem.controller;
 import com.internationalairportmanagementsystem.dtos.posts.PostParkingDto;
 import com.internationalairportmanagementsystem.dtos.puts.PutParkingDto;
 import com.internationalairportmanagementsystem.enetity.Parking;
+import com.internationalairportmanagementsystem.service.implementations.ParkingServiceImpl;
 import com.internationalairportmanagementsystem.service.interfaces.ParkingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,12 +18,12 @@ import java.util.List;
 @RequestMapping("/api")
 public class ParkingRestController {
 
-    private ParkingService parkingService;
+    private final ParkingServiceImpl parkingServiceImpl;
 
-    @Autowired
-    public ParkingRestController(ParkingService theParkingService){
-        parkingService=theParkingService;
+    public ParkingRestController(ParkingServiceImpl parkingServiceImpl) {
+        this.parkingServiceImpl = parkingServiceImpl;
     }
+
 
     @Operation(
             description = "Endpoint to get all parkings",
@@ -37,8 +40,8 @@ public class ParkingRestController {
             }
     )
     @GetMapping("/public/parkings")
-    public List<Parking> findAllParkings(){
-        return parkingService.findAll();
+    public ResponseEntity<List<Parking>> findAllParkings(){
+        return new ResponseEntity<>(parkingServiceImpl.findAll(), HttpStatus.OK);
     }
 
     @Operation(
@@ -56,12 +59,8 @@ public class ParkingRestController {
             }
     )
     @GetMapping("/public/parkings/{parkingId}")
-    public Parking getParkingServiceById(@PathVariable Long parkingId){
-        Parking theParking=parkingService.findById(parkingId);
-        if(theParking==null){
-            throw new RuntimeException("Id not found - "+parkingId);
-        }
-        return theParking;
+    public ResponseEntity<Parking> getParkingById(@PathVariable Long parkingId){
+        return new ResponseEntity<>(parkingServiceImpl.findById(parkingId), HttpStatus.OK);
     }
 
     @Operation(
@@ -79,8 +78,8 @@ public class ParkingRestController {
             }
     )
     @PostMapping("/private/parkings")
-    public Parking addParking(@RequestBody PostParkingDto postParkingDto){
-        return parkingService.create(postParkingDto);
+    public ResponseEntity<Parking> addParking(@RequestBody PostParkingDto postParkingDto){
+        return new ResponseEntity<>(parkingServiceImpl.create(postParkingDto), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -97,9 +96,9 @@ public class ParkingRestController {
                     )
             }
     )
-    @PutMapping("/private/parkings")
-    public Parking updateParking(@RequestBody PutParkingDto putParkingDto){
-        return parkingService.update(, putParkingDto);
+    @PutMapping("/private/parkings/{parkingId}")
+    public ResponseEntity<Parking> updateParking(@PathVariable Long parkingId,@RequestBody PutParkingDto putParkingDto){
+        return new ResponseEntity<>(parkingServiceImpl.update(parkingId,putParkingDto), HttpStatus.OK);
     }
 
     @Operation(
@@ -121,14 +120,8 @@ public class ParkingRestController {
             }
     )
     @DeleteMapping("/private/parkings/{parkingId}")
-    public String deleteParkingById(@PathVariable Long parkingId){
-        Parking parking = parkingService.findById(parkingId);
-        if(parking==null){
-            throw new RuntimeException("Id not found - "+parkingId);
-
-        }
-        parkingService.deleteById(parkingId);
-        return "Deleted Parking id - "+parkingId;
+    public ResponseEntity<String> deleteParkingById(@PathVariable Long parkingId){
+       return new ResponseEntity<>(parkingServiceImpl.deleteById(parkingId), HttpStatus.OK);
     }
     @Operation(
             description = "Endpoint to delete all parkings",
@@ -145,7 +138,7 @@ public class ParkingRestController {
             }
     )
     @DeleteMapping("/private/parkings")
-    public String deleteAllParkings() {
-        return parkingService.deleteAllParking();
+    public ResponseEntity<String> deleteAllParkings() {
+       return new ResponseEntity<>(parkingServiceImpl.deleteAllParking(), HttpStatus.OK);
     }
 }
